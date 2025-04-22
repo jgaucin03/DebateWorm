@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DebateWorm</title>
+    <style>
+        :root {
+            --primary: #6A2C70;
+            --secondary: #B83B5E;
+            --accent: #F08A5D;
+            --light: #F9ED69;
+            --dark: #3D315B;
+            --background: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background);
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        nav {
+            margin-right: 20px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        nav li {
+            margin-left: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+        }
+        
+        .hero-content {
+            flex: 1;
+            padding-right: 40px;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        
+        .button {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background-color: var(--accent);
+        }
+        
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .mode-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .mode-card h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        .mode-icon {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .debate-interface {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 40px 0;
+        }
+        
+        .debate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--light);
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .debate-content {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .reading-section {
+            flex: 1;
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: var(--background);
+            border-radius: 10px;
+        }
+        
+        .debate-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .debate-messages {
+            flex: 1;
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: var(--background);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+        
+        .player-message {
+            background-color: var(--secondary);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .opponent-message {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .debate-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .debate-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .user-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        
+        .pet-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .pet-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .pet {
+            width: 150px;
+            height: 150px;
+            background-color: var(--light);
+            border-radius: 50%;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+        }
+        
+        .pet-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .pet-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .pet-stat-value {
+            width: 80px;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .pet-stat-fill {
+            height: 100%;
+            background-color: var(--accent);
+            width: 70%;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        
+        #showDebate {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div style="background: var(--accent); padding: 5px; border-radius: 5px;">🪱📚</div>
+            <h1>DebateWorm</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Library</a></li>
+                <li><a href="#">Leaderboard</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Challenge Your Mind. Debate with Depth.</h2>
+                <p>DebateWorm is a revolutionary platform where reading comprehension meets competitive debate. Dive into books, form arguments, and challenge others in a battle of wits and understanding.</p>
+                <a href="#" class="button">Play Now</a>
+                <a href="#" class="button" style="background-color: var(--dark);">Learn More</a>
+                <button id="showDebate" class="button">Show Debate Demo</button>
+            </div>
+            <div class="hero-image">
+                <img src="/api/placeholder/500/300" alt="Students engaging in literary debate">
+            </div>
+        </section>
+        
+        <section class="game-modes">
+            <div class="mode-card">
+                <div class="mode-icon">🏆</div>
+                <h3>Ranked Debate Mode</h3>
+                <p>Test your literary knowledge against other players. Engage in real-time debates using evidence from texts. Climb the leaderboard as you win!</p>
+                <a href="#" class="button">Start Ranking</a>
+            </div>
+            
+            <div class="mode-card">
+                <div class="mode-icon">🎮</div>
+                <h3>Practice Mode</h3>
+                <p>Hone your skills in a pressure-free environment. Get AI feedback on your arguments and improve your debate techniques.</p>
+                <a href="#" class="button">Practice Now</a>
+            </div>
+            
+            <div class="mode-card">
+                <div class="mode-icon">📖</div>
+                <h3>Story Mode</h3>
+                <p>Follow a narrative journey that challenges your reading comprehension with progressive difficulty levels.</p>
+                <a href="#" class="button">Begin Adventure</a>
+            </div>
+            
+            <div class="mode-card">
+                <div class="mode-icon">📝</div>
+                <h3>Book Reading Mode</h3>
+                <p>Read and analyze various texts. Answer smart quizzes that test your understanding and critical thinking before you can debate on them.</p>
+                <a href="#" class="button">Start Reading</a>
+            </div>
+        </section>
+        
+        <section class="debate-interface" id="debateInterface">
+            <div class="debate-header">
+                <div class="player-info">
+                    <div class="player-avatar">You</div>
+                    <div>
+                        <h4>BookWorm74</h4>
+                        <p>Level 12 • 345 points</p>
+                    </div>
+                </div>
+                
+                <div class="timer">2:45</div>
+                
+                <div class="player-info">
+                    <div>
+                        <h4>LiteraryTitan</h4>
+                        <p>Level 14 • 412 points</p>
+                    </div>
+                    <div class="player-avatar">LT</div>
+                </div>
+            </div>
+            
+            <div class="debate-topic">
+                <h3>Topic: Should Atticus Finch have defended Tom Robinson?</h3>
+                <p>Book: To Kill a Mockingbird by Harper Lee</p>
+            </div>
+            
+            <div class="debate-content">
+                <div class="reading-section">
+                    <h4>Excerpt from To Kill a Mockingbird</h4>
+                    <p>"You never really understand a person until you consider things from his point of view... Until you climb inside of his skin and walk around in it."</p>
+                    <p>Atticus said that the Ewells had been the disgrace of Maycomb for three generations. None of them had done an honest day's work in his recollection. He said that some Christmas, when he was getting rid of the tree, he would take me with him and show me where and how they lived. They were people, but they lived like animals.</p>
+                    <p>"They can go to school any time they want to, when they show the faintest symptom of wanting an education," said Atticus.</p>
+                    <p>"There are ways of keeping them in school by force, but it's silly to force people like the Ewells into a new environment. The fact is they seem to do all right on their own. They don't bother anybody, and because they don't bother anybody and because they stay on their own side of town, they've gotten away with doing exactly as they please for years."</p>
+                    <p>"Scout, simply by the nature of the work, every lawyer gets at least one case in his lifetime that affects him personally. This one's mine, I guess."</p>
+                    <p>"If you shouldn't be defendin' him, then why are you doin' it?"</p>
+                    <p>"For a number of reasons," said Atticus. "The main one is, if I didn't I couldn't hold up my head in town, I couldn't represent this county in the legislature, I couldn't even tell you or Jem not to do something again."</p>
+                </div>
+                
+                <div class="debate-section">
+                    <div class="debate-messages">
+                        <div class="message opponent-message">
+                            <strong>LiteraryTitan:</strong> Looking at Maycomb's social context, Atticus Finch had a moral obligation to defend Tom Robinson despite community opposition. The text shows Atticus values integrity above all, saying he "couldn't hold up his head in town" if he didn't take the case.
+                        </div>
+                        
+                        <div class="message player-message">
+                            <strong>You:</strong> While Atticus's moral stance is admirable, I'd argue he put his family at unnecessary risk. Scout and Jem faced harassment, and the text shows he knew the case was unwinnable given Maycomb's racism.
+                        </div>
+                        
+                        <div class="message opponent-message">
+                            <strong>LiteraryTitan:</strong> But the text actually counters that view. When Atticus says, "Every lawyer gets at least one case in his lifetime that affects him personally," he's acknowledging the risk but showing that principles sometimes require sacrifice. What would he be teaching Scout and Jem by refusing the case?
+                        </div>
+                    </div>
+                    
+                    <div class="debate-input">
+                        <input type="text" placeholder="Type your argument... Support with text evidence!">
+                        <button class="button">Send</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <h4>AI Moderator Feedback</h4>
+                <p>Both debaters are making strong arguments supported by the text. BookWorm74, consider addressing how Atticus's quote about "climbing inside someone's skin" relates to his decision to defend Tom.</p>
+            </div>
+        </section>
+        
+        <section class="user-stats">
+            <div class="stat-card">
+                <h3>Debates Won</h3>
+                <div class="stat-value">24</div>
+                <p>Top 15% of players</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Books Read</h3>
+                <div class="stat-value">17</div>
+                <p>3 this month</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Current Rank</h3>
+                <div class="stat-value">Gold</div>
+                <p>Top 20% of players</p>
+            </div>
+        </section>
+        
+        <section class="pet-section">
+            <h3>Your DebateWorm Pet</h3>
+            <div class="pet-container">
+                <div class="pet">🐛</div>
+                <h4>Einstein (Level 7)</h4>
+                <p>Feed your pet knowledge by winning debates and completing reading challenges!</p>
+                
+                <div class="pet-stats">
+                    <div class="pet-stat">
+                        <span>Hunger</span>
+                        <div class="pet-stat-value">
+                            <div class="pet-stat-fill" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="pet-stat">
+                        <span>Wisdom</span>
+                        <div class="pet-stat-value">
+                            <div class="pet-stat-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="pet-stat">
+                        <span>Energy</span>
+                        <div class="pet-stat-value">
+                            <div class="pet-stat-fill" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 DebateWorm - Making Reading Interactive and Fun</p>
+    </footer>
+    
+    <script>
+        document.getElementById('showDebate').addEventListener('click', function() {
+            document.getElementById('debateInterface').style.display = 'block';
+            this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

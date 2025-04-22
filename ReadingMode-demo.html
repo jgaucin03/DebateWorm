@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DebateWorm – Reading Mode Demo</title>
+  <style>
+    :root {
+      --primary: #6A2C70;
+      --secondary: #B83B5E;
+      --accent: #F08A5D;
+      --light: #F9ED69;
+      --dark: #3D315B;
+      --background: #F5F5F5;
+      --success: #4CAF50;
+      --warning: #FF9800;
+      --error: #F44336;
+      --info: #2196F3;
+    }
+    
+    * {box-sizing: border-box; transition: all 0.2s ease;}
+    
+    body {
+      margin: 0; 
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: var(--background);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1000px; 
+      margin: auto; 
+      padding: 2rem;
+    }
+    
+    h1, h2, h3, h4 {
+      margin: 0 0 .5rem 0;
+    }
+    
+    .button {
+      background: var(--secondary);
+      color: #fff;
+      border: none;
+      padding: .5rem 1rem;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+    
+    .button:hover {
+      background: var(--accent);
+    }
+    
+    .button:disabled {
+      opacity: 0.5; 
+      cursor: not-allowed;
+    }
+    
+    .button.primary {
+      background: var(--primary);
+    }
+    
+    .button.success {
+      background: var(--success);
+    }
+    
+    /* Header with mode tabs */
+    .mode-tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--primary);
+    }
+    
+    .mode-tab {
+      padding: 0.75rem 1.5rem;
+      background: #e0e0e0;
+      border-radius: 8px 8px 0 0;
+      margin-right: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .mode-tab.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Main reading card */
+    #readingCard {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.1);
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    
+    /* Progress bar */
+    .progress-container {
+      margin-bottom: 1.5rem;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background-color: var(--accent);
+      transition: width 0.5s ease;
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    
+    .progress-step {
+      font-size: 0.85rem;
+      color: #999;
+    }
+    
+    .progress-step.active {
+      color: var(--primary);
+      font-weight: bold;
+    }
+    
+    /* Book content */
+    .book-content {
+      padding: 1.5rem;
+      background-color: var(--background);
+      border-radius: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    
+    .book-content p {
+      margin-bottom: 1rem;
+    }
+    
+    .book-content p:first-of-type::first-letter {
+      font-size: 3.5em;
+      float: left;
+      padding-right: 8px;
+      color: var(--primary);
+      font-family: Georgia, serif;
+      line-height: 0.8;
+    }
+    
+    /* Question section */
+    .question-section {
+      background-color: var(--info);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .question-section h3 {
+      margin-top: 0;
+    }
+    
+    .question {
+      margin-bottom: 1.5rem;
+    }
+    
+    .question-text {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .question-note {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+    
+    .answer-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 5px;
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 1rem;
+      min-height: 100px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .answer-input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+    
+    /* Analysis Section */
+    .analysis-section {
+      padding: 1.5rem;
+      background-color: var(--light);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+    
+    .analysis-section h3 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+    
+    .feedback-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .feedback-header h4 {
+      margin: 0;
+      color: var(--dark);
+    }
+    
+    .score-badge {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .feedback-text {
+      font-size: 0.95rem;
+    }
+    
+    .strength {
+      color: var(--success);
+      border-left: 3px solid var(--success);
+      padding-left: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .improvement {
+      color: var(--warning);
+      border-left: 3px solid var(--warning);
+      padding-left: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    /* Completion Badge */
+    .completion-badge {
+      background-color: var(--success);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+    }
+    
+    .badge-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .badge-text h3 {
+      margin-top: 0;
+    }
+    
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+    
+    /* Book selection */
+    #bookSelector {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    #bookSelector h3 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+    
+    .book-options {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    
+    .book-option {
+      min-width: 150px;
+      background: var(--background);
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .book-option:hover {
+      transform: translateY(-3px);
+    }
+    
+    .book-option.active {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .book-option h4 {
+      margin: 0 0 0.25rem 0;
+      font-size: 0.9rem;
+    }
+    
+    .book-option p {
+      margin: 0;
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    
+    /* Highlight feature */
+    .highlight {
+      background-color: rgba(249, 237, 105, 0.5);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DebateWorm 
+      <span style="font-size: 0.6em; vertical-align: middle; color: var(--secondary);">
+        Improving Reading Through Meaningful Discussion
+      </span>
+    </h1>
+    
+    <div class="mode-tabs">
+      <div class="mode-tab">Debate Mode</div>
+      <div class="mode-tab active">Reading Mode</div>
+      <div class="mode-tab">Story Mode</div>
+      <div class="mode-tab">Practice Mode</div>
+    </div>
+    
+    <div id="bookSelector">
+      <h3>Select a Book to Read</h3>
+      <p>Choose a book to read, analyze, and prepare for future debates:</p>
+      
+      <div class="book-options">
+        <div class="book-option active" data-book="mockingbird">
+          <h4>To Kill a Mockingbird</h4>
+          <p>Harper Lee</p>
+        </div>
+        <div class="book-option" data-book="gatsby">
+          <h4>The Great Gatsby</h4>
+          <p>F. Scott Fitzgerald</p>
+        </div>
+        <div class="book-option" data-book="1984">
+          <h4>1984</h4>
+          <p>George Orwell</p>
+        </div>
+        <div class="book-option" data-book="hamlet">
+          <h4>Hamlet</h4>
+          <p>William Shakespeare</p>
+        </div>
+        <div class="book-option" data-book="frankenstein">
+          <h4>Frankenstein</h4>
+          <p>Mary Shelley</p>
+        </div>
+      </div>
+      
+      <div style="margin-top: 1rem;">
+        <button id="startReadingBtn" class="button">Start Reading</button>
+      </div>
+    </div>
+    
+    <div id="readingCard" style="display: none;">
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 33%;"></div>
+        </div>
+        <div class="progress-steps">
+          <div class="progress-step active">Read</div>
+          <div class="progress-step">Analyze</div>
+          <div class="progress-step">Complete</div>
+        </div>
+      </div>
+      
+      <h2>To Kill a Mockingbird <span style="font-size: 0.7em; color: #666;">Chapter 11 excerpt</span></h2>
+      
+      <div class="book-content" id="bookContentSection">
+        <p>Atticus said to Jem one day, "I'd rather you shot at tin cans in the backyard, but I know you'll go after birds. Shoot all the blue jays you want, if you can hit 'em, but remember it's a sin to kill a mockingbird." That was the only time I ever heard Atticus say it was a sin to do something, and I asked Miss Maudie about it.</p>
+        
+        <p>"Your father's right," she said. "Mockingbirds don't do one thing but make music for us to enjoy. They don't eat up people's gardens, don't nest in corncribs, they don't do one thing but sing their hearts out for us. That's why it's a sin to kill a mockingbird."</p>
+        
+        <p>When he gave us our air-rifles Atticus wouldn't teach us to shoot. Uncle Jack instructed us in the rudiments thereof; he said Atticus wasn't interested in guns. Atticus said to Jem, "I'd rather you shot at tin cans in the backyard, but I know you'll go after birds. Shoot all the blue jays you want, if you can hit 'em, but remember it's a sin to kill a mockingbird."</p>
+        
+        <p>I was struggling hard to remember every detail about Tom Robinson's case. Sometimes I thought Atticus was fighting for Tom Robinson to show the town that he really wasn't a Confederate-gray-wearing, tree-climbing hot head, but a respectable, hardworking man. Atticus kept saying that the American courts were the great levelers, that whatever you might be in this life, when you walked through the courtroom doors, it all came down to what the evidence said.</p>
+        
+        <p>Much later, I would understand that he was trying to teach Jem and me something. "As you grow older," he said, "you'll see white men cheat black men every day of your life, but let me tell you something and don't you forget it—whenever a white man does that to a black man, no matter who he is, how rich he is, or how fine a family he comes from, that white man is trash."</p>
+        
+        <p>Atticus was speaking so quietly his last word crashed on our ears. I looked up, and his face was vehement. "There's nothing more sickening to me than a low-grade white man who'll take advantage of a Negro's ignorance. Don't fool yourselves—it's all adding up, and one of these days we're going to pay the bill for it. I hope it's not in you children's time."</p>
+        
+        <p>Jem was standing beside his bed. "It's all adding up," I said, "the verdict's already in the pocket. You've been giving 'em all the evidence, so hidden and plain—"</p>
+        
+        <p>"You're not supposed to understand it, Scout," Jem said. "It's beyond our ken. You were too small, but I can remember when Atticus defended some colored people and the courthouse was jammed with folks from the country, and 'bout twice the crowd we had Tuesday. They did the same thing, stayed extra quiet, all of 'em, and they took Tom Robinson back to jail and tried him behind closed doors. But that's just how it usually is."</p>
+      </div>
+      
+      <div class="question-section">
+        <h3>Critical Reading Analysis</h3>
+        <p>Answer the following questions to demonstrate your understanding of the text. Your responses will be analyzed for depth of comprehension and critical thinking.</p>
+        
+        <div class="question">
+          <div class="question-text">1. What is the symbolic meaning of the mockingbird in this novel, and how might it relate to Tom Robinson's character?</div>
+          <div class="question-note">Support your answer with evidence from the text.</div>
+          <textarea class="answer-input" id="question1Input" placeholder="Type your answer here..."></textarea>
+        </div>
+        
+        <div class="question">
+          <div class="question-text">2. Based on this excerpt, what does Atticus's statement about "white men cheating black men" reveal about the themes of the novel and his own character?</div>
+          <div class="question-note">Consider the historical context and Atticus's role in the community.</div>
+          <textarea class="answer-input" id="question2Input" placeholder="Type your answer here..."></textarea>
+        </div>
+        
+        <button id="submitAnswersBtn" class="button primary">Submit Answers</button>
+      </div>
+      
+      <div class="analysis-section" id="analysisSection">
+        <h3>AI Analysis of Your Responses</h3>
+        <p>Here's an evaluation of your critical reading responses:</p>
+        
+        <div class="feedback-card">
+          <div class="feedback-header">
+            <h4>Question 1: Symbolic Meaning of the Mockingbird</h4>
+            <div class="score-badge">8/10</div>
+          </div>
+          <div class="feedback-text">
+            <p>Your response demonstrates a strong understanding of the mockingbird symbol and its connection to Tom Robinson as an innocent figure who is harmed despite doing no wrong. You effectively cited evidence from Miss Maudie's explanation about mockingbirds not harming anyone but "singing their hearts out."</p>
+            <div class="strength">Strong connection between the mockingbird's innocence and Tom Robinson's situation.</div>
+            <div class="improvement">Consider elaborating on how this symbol extends to other characters in the novel who might also represent "mockingbirds."</div>
+          </div>
+        </div>
+        
+        <div class="feedback-card">
+          <div class="feedback-header">
+            <h4>Question 2: Analysis of Atticus's Statement</h4>
+            <div class="score-badge">9/10</div>
+          </div>
+          <div class="feedback-text">
+            <p>Excellent analysis of Atticus's statement about "white men cheating black men." You identified the core themes of racial injustice and moral integrity, while noting how Atticus stands apart from his community through his principled stance. Your response shows deep comprehension of both the historical context and character motivation.</p>
+            <div class="strength">Thorough examination of how Atticus's statement connects to broader themes of justice and integrity.</div>
+            <div class="improvement">You could strengthen your response by noting how Atticus predicts future consequences ("one of these days we're going to pay the bill for it"), suggesting his awareness of historical change.</div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 1.5rem;">
+          <h4>Overall Reading Comprehension Score: 85%</h4>
+          <p>You've demonstrated strong critical reading skills and a good understanding of the text's themes and symbolism. You're now eligible to participate in debates about To Kill a Mockingbird!</p>
+          <button id="completeReadingBtn" class="button success">Complete & Unlock Debates</button>
+        </div>
+      </div>
+      
+      <div class="completion-badge" id="completionBadge">
+        <div class="badge-icon">🏆</div>
+        <div class="badge-text">
+          <h3>Reading Analysis Complete!</h3>
+          <p>You've successfully analyzed Chapter 11 of To Kill a Mockingbird and can now participate in debates about this text.</p>
+        </div>
+        
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-value">85%</div>
+            <div class="stat-label">Comprehension</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">+75</div>
+            <div class="stat-label">XP Gained</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">🔍</div>
+            <div class="stat-label">Critical Reader Badge</div>
+          </div>
+        </div>
+        
+        <button id="findDebateBtn" class="button">Find a Debate</button>
+        <button id="readMoreBtn" class="button" style="background-color: var(--dark); margin-left: 1rem;">Read More Chapters</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // DOM Elements
+    const startReadingBtn = document.getElementById('startReadingBtn');
+    const readingCard = document.getElementById('readingCard');
+    const bookSelector = document.getElementById('bookSelector');
+    const submitAnswersBtn = document.getElementById('submitAnswersBtn');
+    const analysisSection = document.getElementById('analysisSection');
+    const completeReadingBtn = document.getElementById('completeReadingBtn');
+    const completionBadge = document.getElementById('completionBadge');
+    const bookContentSection = document.getElementById('bookContentSection');
+    const question1Input = document.getElementById('question1Input');
+    const question2Input = document.getElementById('question2Input');
+    const findDebateBtn = document.getElementById('findDebateBtn');
+    const readMoreBtn = document.getElementById('readMoreBtn');
+    const bookOptions = document.querySelectorAll('.book-option');
+    
+    // Book selection
+    bookOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        bookOptions.forEach(o => o.classList.remove('active'));
+        option.classList.add('active');
+      });
+    });
+    
+    // Start reading button
+    startReadingBtn.addEventListener('click', () => {
+      bookSelector.style.display = 'none';
+      readingCard.style.display = 'block';
+      
+      // Highlight first paragraph after a delay to draw attention
+      setTimeout(() => {
+        const firstParagraph = bookContentSection.querySelector('p:first-child');
+        firstParagraph.classList.add('highlight');
+        setTimeout(() => {
+          firstParagraph.classList.remove('highlight');
+        }, 1500);
+      }, 500);
+    });
+    
+    // Text highlighting functionality
+    bookContentSection.addEventListener('mouseup', () => {
+      const selection = window.getSelection();
+      const selectedText = selection.toString().trim();
+      
+      if (selectedText.length > 0) {
+        // If an answer field is focused, add the text there
+        if (document.activeElement === question1Input || document.activeElement === question2Input) {
+          document.activeElement.value += ' "' + selectedText + '" ';
+        }
+      }
+    });
+    
+    // Submit answers button
+    submitAnswersBtn.addEventListener('click', () => {
+      const answer1 = question1Input.value.trim();
+      const answer2 = question2Input.value.trim();
+      
+      if (answer1.length < 50 || answer2.length < 50) {
+        alert('Please provide more detailed answers (at least 50 characters for each question).');
+        return;
+      }
+      
+      // Update progress bar
+      document.querySelector('.progress-fill').style.width = '66%';
+      document.querySelectorAll('.progress-step')[1].classList.add('active');
+      
+      // Show analysis section
+      analysisSection.style.display = 'block';
+      
+      // Scroll to analysis section
+      analysisSection.scrollIntoView({ behavior: 'smooth' });
+      
+      // Disable inputs
+      question1Input.disabled = true;
+      question2Input.disabled = true;
+      submitAnswersBtn.disabled = true;
+    });
+    
+    // Complete reading button
+    completeReadingBtn.addEventListener('click', () => {
+      // Update progress bar
+      document.querySelector('.progress-fill').style.width = '100%';
+      document.querySelectorAll('.progress-step')[2].classList.add('active');
+      
+      // Show completion badge
+      completionBadge.style.display = 'block';
+      
+      // Hide analysis section
+      analysisSection.style.display = 'none';
+      
+      // Scroll to completion badge
+      completionBadge.scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // Find debate button
+    findDebateBtn.addEventListener('click', () => {
+      alert('In the full application, this would take you to the Debate Mode where you can find debates about To Kill a Mockingbird.');
+    });
+    
+    // Read more button
+    readMoreBtn.addEventListener('click', () => {
+      alert('In the full application, this would load more chapters from To Kill a Mockingbird for you to read and analyze.');
+    });
+    
+    // Demo notice for tabs
+    document.querySelectorAll('.mode-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (!tab.classList.contains('active')) {
+          alert('This is a demo of the Reading Mode only. The full application would include all modes.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

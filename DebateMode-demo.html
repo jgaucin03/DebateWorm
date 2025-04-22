@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DebateWorm – Debate Mode Demo</title>
+  <style>
+    :root {
+      --primary: #6A2C70;
+      --secondary: #B83B5E;
+      --accent: #F08A5D;
+      --light: #F9ED69;
+      --dark: #3D315B;
+      --background: #F5F5F5;
+      --success: #4CAF50;
+      --info: #2196F3;
+    }
+    *{box-sizing:border-box;transition:all .2s ease}
+    body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:var(--background);color:var(--dark);line-height:1.6}
+    .container{max-width:1000px;margin:auto;padding:2rem}
+    h1,h2,h3{margin:0 0 .5rem 0}
+    .button{background:var(--secondary);color:#fff;border:none;padding:.5rem 1rem;border-radius:5px;font-weight:700;cursor:pointer}
+    .button:hover{background:var(--accent)}
+    .button:disabled{opacity:.5;cursor:not-allowed}
+    /* tabs */
+    .mode-tabs{display:flex;margin-bottom:1.5rem;border-bottom:2px solid var(--primary)}
+    .mode-tab{padding:.75rem 1.5rem;background:#e0e0e0;border-radius:8px 8px 0 0;margin-right:.5rem;font-weight:bold;cursor:pointer}
+    .mode-tab.active{background:var(--primary);color:#fff}
+    /* debate area */
+    #demoCard{background:#fff;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:1.5rem;margin-top:1rem}
+    #debateHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #eee}
+    .player{display:flex;align-items:center;gap:.75rem}
+    .avatar{width:48px;height:48px;border-radius:50%;background:var(--light);display:flex;align-items:center;justify-content:center;font-weight:700}
+    #timer{font-size:1.5rem;font-weight:700;color:var(--secondary);padding:.5rem 1rem;border:2px solid var(--secondary);border-radius:8px}
+    #debateArea{display:flex;gap:1.5rem}
+    #reading{flex:1;background:var(--background);border-radius:8px;padding:1rem;height:420px;overflow-y:auto}
+    #chatCol{flex:1;display:flex;flex-direction:column}
+    #messages{flex:1;background:var(--background);border-radius:8px;padding:1rem;height:320px;overflow-y:auto;margin-bottom:1rem}
+    .msg{padding:.75rem 1rem;border-radius:8px;margin:.5rem 0;max-width:90%}
+    .msg strong{display:block;margin-bottom:.25rem;font-size:.85rem}
+    .msg .evidence{font-style:italic;font-size:.9rem;margin-top:.5rem;padding-top:.5rem;border-top:1px dashed rgba(0,0,0,.1)}
+    .you{background:var(--secondary);color:#fff;margin-left:auto}
+    .you .evidence{border-top:1px dashed rgba(255,255,255,.3)}
+    .opp{background:var(--light);color:var(--dark)}
+    .system{background:var(--dark);color:#fff;text-align:center;max-width:100%}
+    #inputRow{display:flex;gap:.5rem;margin-bottom:1rem}
+    #inputRow input{flex:1;padding:.75rem;border:1px solid #ddd;border-radius:5px;font-size:1rem}
+    #evidenceRow{display:flex;gap:.5rem;margin-bottom:1rem}
+    #evidenceRow textarea{flex:1;padding:.75rem;border:1px solid #ddd;border-radius:5px;min-height:60px;font-size:.9rem;font-style:italic}
+    /* ai panel */
+    #aiModeratorPanel{margin-top:1.5rem;padding:1rem;background:var(--info);color:#fff;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+    #aiModeratorPanel h4{margin-top:0;display:flex;align-items:center;gap:.5rem}
+    #scorecards{display:flex;gap:1rem;margin-top:1rem}
+    .scorecard{flex:1;background:rgba(255,255,255,.2);border-radius:8px;padding:.75rem}
+    .scorecard h5{margin:0 0 .5rem 0;font-size:.9rem;opacity:.8}
+    .score{font-size:1.5rem;font-weight:700}
+    .score-comment{font-size:.85rem;margin-top:.25rem}
+    /* highlight */
+    .highlight-tool{position:absolute;padding:.5rem;background:var(--primary);color:#fff;border-radius:5px;display:none;z-index:10}
+    .highlight-tool button{background:var(--accent);border:none;color:#fff;padding:3px 8px;border-radius:3px;cursor:pointer;font-size:.8rem}
+    /* book selector */
+    #bookSelector{background:#fff;padding:1rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+    .book-options{display:flex;gap:1rem;margin-top:.5rem;overflow-x:auto;padding-bottom:.5rem}
+    .book-option{min-width:150px;background:var(--background);padding:.75rem;border-radius:8px;cursor:pointer}
+    .book-option:hover{transform:translateY(-3px)}
+    .book-option.active{background:var(--accent);color:#fff}
+    /* conclusion */
+    #debateConclusion{display:none;margin-top:1.5rem;background:var(--success);color:#fff;padding:1rem;border-radius:8px;text-align:center}
+    .results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0}
+    .result-card{background:rgba(255,255,255,.2);padding:.75rem;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DebateWorm <span style="font-size:.6em;color:var(--secondary)">Improving Reading Through Meaningful Discussion</span></h1>
+
+    <!-- Tabs -->
+    <div class="mode-tabs">
+      <div class="mode-tab active">Debate Mode</div>
+      <div class="mode-tab">Reading Mode</div>
+      <div class="mode-tab">Story Mode</div>
+      <div class="mode-tab">Practice Mode</div>
+    </div>
+
+    <!-- Book selector -->
+    <div id="bookSelector">
+      <h3>Select a Book to Debate</h3>
+      <p>Choose a book you've read to start debating topics from it:</p>
+      <div class="book-options">
+        <div class="book-option active" data-book="mockingbird"><h4>To Kill a Mockingbird</h4><p>Harper Lee</p></div>
+        <div class="book-option" data-book="gatsby"><h4>The Great Gatsby</h4><p>F. Scott Fitzgerald</p></div>
+        <div class="book-option" data-book="1984"><h4>1984</h4><p>George Orwell</p></div>
+        <div class="book-option" data-book="hamlet"><h4>Hamlet</h4><p>William Shakespeare</p></div>
+        <div class="book-option" data-book="frankenstein"><h4>Frankenstein</h4><p>Mary Shelley</p></div>
+      </div>
+      <button id="startDebateBtn" class="button" style="margin-top:1rem">Start Debate</button>
+    </div>
+
+    <!-- Debate card -->
+    <div id="demoCard" style="display:none">
+      <div id="debateHeader">
+        <div class="player"><div class="avatar">You</div><div><strong>BookWorm74</strong><br><small>Lvl 12 · 345 pts</small></div></div>
+        <div id="timer">03:00</div>
+        <div class="player"><div><strong>LiteraryTitan</strong><br><small>Lvl 14 · 412 pts</small></div><div class="avatar">LT</div></div>
+      </div>
+
+      <div id="debateTopic"><h3>Topic: Should Atticus Finch have defended Tom Robinson?</h3><p><em>Book: To Kill a Mockingbird</em></p></div>
+
+      <div id="debateArea">
+        <div id="reading"><h4>Key Excerpts from the Text</h4><p>"You never really understand a person until you consider things from his point of view… until you climb inside of his skin and walk around in it."</p><p>"Simply because we were licked a hundred years before we started is no reason for us not to try to win."</p><p>"The one thing that doesn't abide by majority rule is a person's conscience."</p></div>
+        <div id="chatCol">
+          <div id="messages"><div class="msg system"><strong>Debate has begun!</strong><p>Support arguments with evidence. 3 minutes remaining.</p></div><div class="msg opp"><strong>LiteraryTitan:</strong> Looking at Maycomb's social context, Atticus had a moral obligation to defend Tom Robinson.<div class="evidence">Evidence: "…a person's conscience."</div></div></div>
+          <div id="evidenceRow"><textarea id="evidenceInput" placeholder="Add a quote (optional)…"></textarea></div>
+          <div id="inputRow"><input id="msgInput" type="text" placeholder="Type your argument…"><button id="sendBtn" class="button">Send</button></div>
+        </div>
+      </div>
+
+      <div id="aiModeratorPanel"><h4>🤖 AI Moderator Feedback</h4><p>Waiting for your first argument…</p><div id="scorecards" style="display:none"><div class="scorecard"><h5>TEXTUAL EVIDENCE</h5><div class="score">--</div><div class="score-comment">Not yet evaluated</div></div><div class="scorecard"><h5>ARGUMENT LOGIC</h5><div class="score">--</div><div class="score-comment">Not yet evaluated</div></div><div class="scorecard"><h5>RESPONSIVENESS</h5><div class="score">--</div><div class="score-comment">Not yet evaluated</div></div></div></div>
+
+      <div id="debateConclusion"><h3>Debate Concluded!</h3><p>You've completed the debate.</p><div class="results-grid"><div class="result-card"><h4>XP EARNED</h4><div class="result-value">+75 XP</div></div><div class="result-card"><h4>RANK PROGRESS</h4><div class="result-value">+15 pts</div></div><div class="result-card"><h4>BADGES</h4><div class="result-value">Text Weaver 🏅</div></div></div><div id="finalFeedback"><h4>AI Moderator Analysis</h4><p>You effectively used textual evidence. Expand on sacrifice vs responsibility next time.</p></div><button id="newDebateBtn" class="button" style="margin-top:1rem">Find New Debate</button></div>
+    </div>
+
+    <div class="highlight-tool" id="highlightTool"><button id="useHighlightBtn">Use as Evidence</button></div>
+  </div>
+
+<script>
+const startDebateBtn=document.getElementById('startDebateBtn'),demoCard=document.getElementById('demoCard'),msgInput=document.getElementById('msgInput'),evidenceInput=document.getElementById('evidenceInput'),sendBtn=document.getElementById('sendBtn'),messages=document.getElementById('messages'),timerEl=document.getElementById('timer'),aiPanel=document.getElementById('aiModeratorPanel'),scorecards=document.getElementById('scorecards'),debateConclusion=document.getElementById('debateConclusion'),newDebateBtn=document.getElementById('newDebateBtn'),readingSection=document.getElementById('reading'),highlightTool=document.getElementById('highlightTool'),useHighlightBtn=document.getElementById('useHighlightBtn'),bookOptions=document.querySelectorAll('.book-option');
+bookOptions.forEach(o=>o.addEventListener('click',()=>{bookOptions.forEach(b=>b.classList.remove('active'));o.classList.add('active');}));
+const opponentLines=[{text:"Your point about family safety is valid, but remember Atticus's conscience.",evidence:"\"…a person's conscience.\""},{text:"Atticus knew the case was unwinnable yet still took it.",evidence:"\"…we were licked a hundred years…\""},{text:"He couldn't teach his children integrity if he didn't demonstrate it.",evidence:"\"If I didn't I couldn't hold up my head…\""},{text:"Personal integrity trumps public opinion or even family hardship.",evidence:"\"Before I can live with other folks I've got to live with myself.\""}];
+const moderatorFeedback=["Good point! Consider linking to moral courage.","Interesting perspective. Reference Atticus's motivations.","Compelling argument—tie to conscience rule.","Well reasoned! Context adds depth."];
+let timeLeft=180,ticking,messageCount=0,selectedHighlightText="",debateEnded=false;
+startDebateBtn.addEventListener('click',()=>{document.getElementById('bookSelector').style.display='none';demoCard.style.display='block';msgInput.focus();ticking=setInterval(updateTimer,1000);setTimeout(()=>{scorecards.style.display='flex';updateScores(0,0,0);},2000)});
+function sendMessage(){const t=msgInput.value.trim();if(!t)return;const ev=evidenceInput.value.trim();addMessage(t,true,ev);msgInput.value='';evidenceInput.value='';messageCount++;const eScore=ev?Math.min(messageCount*2+2,9):Math.min(messageCount*2,7),lScore=5+Math.min(messageCount,4),rScore=6+Math.min(messageCount,3);updateScores(eScore,lScore,rScore);updateModeratorFeedback();if(!debateEnded){setTimeout(()=>{const r=opponentLines[Math.floor(Math.random()*opponentLines.length)];addMessage(r.text,false,r.evidence);},1500)}}
+sendBtn.addEventListener('click',sendMessage);msgInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
+function addMessage(t,isYou,evidence){const d=document.createElement('div');d.className='msg '+(isYou?'you':'opp');const n=document.createElement('strong');n.textContent=isYou?'You:':'LiteraryTitan:';d.appendChild(n);d.append(' '+t);if(evidence){const ev=document.createElement('div');ev.className='evidence';ev.textContent=evidence;d.appendChild(ev);}messages.appendChild(d);messages.scrollTop=messages.scrollHeight;}
+function updateTimer(){timeLeft--;if(timeLeft<=0){clearInterval(ticking);endDebate();return;}const m=String(Math.floor(timeLeft/60)).padStart(2,'0'),s=String(timeLeft%60).padStart(2,'0');timerEl.textContent=`${m}:${s}`;if(timeLeft<=30){timerEl.style.color=timeLeft%2===0?'#ff0000':'var(--secondary)'}}
+function endDebate(){debateEnded=true;msgInput.disabled=true;evidenceInput.disabled=true;sendBtn.disabled=true;addMessage('Debate Time Ended',false);setTimeout(()=>{debateConclusion.style.display='block';aiPanel.style.display='none';},3000)}
+newDebateBtn.addEventListener('click',()=>location.reload());
+readingSection.addEventListener('mouseup',()=>{const sel=window.getSelection(),txt=sel.toString().trim();if(txt.length>0&&txt.length<200){selectedHighlightText=txt;const rect=sel.getRangeAt(0).getBoundingClientRect();highlightTool.style.top=`${rect.bottom+window.scrollY+5}px`;highlightTool.style.left=`${rect.left+window.scrollX}px`;highlightTool.style.display='block';}else{highlightTool.style.display='none';}});
+useHighlightBtn.addEventListener('click',()=>{if(selectedHighlightText){evidenceInput.value=selectedHighlightText;highlightTool.style.display='none';msgInput.focus();}});
+document.addEventListener('click',e=>{if(!highlightTool.contains(e.target) && e.target!==useHighlightBtn){highlightTool.style.display='none';}});
+function updateModeratorFeedback(){const f=moderatorFeedback[Math.floor(Math.random()*moderatorFeedback.length)];aiPanel.querySelector('p').textContent=f;}
+function updateScores(t,l,r){const sCards=scorecards.querySelectorAll('.scorecard');sCards[0].querySelector('.score').textContent=t+'/10';sCards[0].querySelector('.score-comment').textContent=getComment(t);sCards[1].querySelector('.score').textContent=l+'/10';sCards[1].querySelector('.score-comment').textContent=getComment(l);sCards[2].querySelector('.score').textContent=r+'/10';sCards[2].querySelector('.score-comment').textContent=getComment(r);}function getComment(s){if(s<3)return'Needs improvement';if(s<6)return'Developing';if(s<8)return'Strong';return'Exceptional!';}
+// demo notice for tabs
+document.querySelectorAll('.mode-tab').forEach(tab=>{tab.addEventListener('click',()=>{alert('Demo limited to Debate Mode. Full application will include all modes.');});});
+</script>
+</body>
+</html>
