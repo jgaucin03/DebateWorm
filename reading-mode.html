@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DebateWorm – Reading Mode Demo</title>
+  <title>DebateWorm – Reading Mode</title>
   <style>
     :root {
       --primary: #6A2C70;
@@ -67,6 +67,48 @@
       background: var(--success);
     }
     
+    /* Header with navigation */
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 0;
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo-icon {
+      background: var(--accent);
+      padding: 5px;
+      border-radius: 5px;
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
     /* Header with mode tabs */
     .mode-tabs {
       display: flex;
@@ -81,6 +123,8 @@
       margin-right: 0.5rem;
       font-weight: bold;
       cursor: pointer;
+      text-decoration: none;
+      color: var(--dark);
     }
     
     .mode-tab.active {
@@ -356,10 +400,41 @@
       background-color: rgba(249, 237, 105, 0.5);
       cursor: pointer;
     }
+    
+    .home-link {
+      display: inline-block;
+      margin-bottom: 15px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .home-link:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <div class="logo-icon">🪱📚</div>
+        <h1>DebateWorm</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">Library</a></li>
+          <li><a href="#">Leaderboard</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
   <div class="container">
+    <a href="index.html" class="home-link">← Back to Home</a>
+    
     <h1>DebateWorm 
       <span style="font-size: 0.6em; vertical-align: middle; color: var(--secondary);">
         Improving Reading Through Meaningful Discussion
@@ -367,8 +442,8 @@
     </h1>
     
     <div class="mode-tabs">
-      <div class="mode-tab">Debate Mode</div>
-      <div class="mode-tab active">Reading Mode</div>
+      <a href="debate-mode.html"><div class="mode-tab">Debate Mode</div></a>
+      <a href="reading-mode.html"><div class="mode-tab active">Reading Mode</div></a>
       <div class="mode-tab">Story Mode</div>
       <div class="mode-tab">Practice Mode</div>
     </div>
@@ -513,7 +588,7 @@
           </div>
         </div>
         
-        <button id="findDebateBtn" class="button">Find a Debate</button>
+        <a href="debate-mode.html" class="button">Find a Debate</a>
         <button id="readMoreBtn" class="button" style="background-color: var(--dark); margin-left: 1rem;">Read More Chapters</button>
       </div>
     </div>
@@ -531,7 +606,6 @@
     const bookContentSection = document.getElementById('bookContentSection');
     const question1Input = document.getElementById('question1Input');
     const question2Input = document.getElementById('question2Input');
-    const findDebateBtn = document.getElementById('findDebateBtn');
     const readMoreBtn = document.getElementById('readMoreBtn');
     const bookOptions = document.querySelectorAll('.book-option');
     
@@ -613,20 +687,15 @@
       completionBadge.scrollIntoView({ behavior: 'smooth' });
     });
     
-    // Find debate button
-    findDebateBtn.addEventListener('click', () => {
-      alert('In the full application, this would take you to the Debate Mode where you can find debates about To Kill a Mockingbird.');
-    });
-    
     // Read more button
     readMoreBtn.addEventListener('click', () => {
       alert('In the full application, this would load more chapters from To Kill a Mockingbird for you to read and analyze.');
     });
     
-    // Demo notice for tabs
+    // Mode tab click handler
     document.querySelectorAll('.mode-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        if (!tab.classList.contains('active')) {
+        if (!tab.classList.contains('active') && !tab.parentElement.href) {
           alert('This is a demo of the Reading Mode only. The full application would include all modes.');
         }
       });

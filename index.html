@@ -53,6 +53,12 @@
             font-size: 24px;
         }
         
+        .logo-icon {
+            background: var(--accent);
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
         nav {
             margin-right: 20px;
         }
@@ -94,6 +100,7 @@
         .hero-image img {
             max-width: 100%;
             border-radius: 10px;
+            cursor: pointer;
         }
         
         .button {
@@ -334,12 +341,12 @@
 <body>
     <header>
         <div class="logo">
-            <div style="background: var(--accent); padding: 5px; border-radius: 5px;">🪱📚</div>
+            <div class="logo-icon">🪱📚</div>
             <h1>DebateWorm</h1>
         </div>
         <nav>
             <ul>
-                <li><a href="#" class="active">Home</a></li>
+                <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="#">Library</a></li>
                 <li><a href="#">Leaderboard</a></li>
                 <li><a href="#">Profile</a></li>
@@ -352,12 +359,12 @@
             <div class="hero-content">
                 <h2>Challenge Your Mind. Debate with Depth.</h2>
                 <p>DebateWorm is a revolutionary platform where reading comprehension meets competitive debate. Dive into books, form arguments, and challenge others in a battle of wits and understanding.</p>
-                <a href="#" class="button">Play Now</a>
+                <a href="debate-mode.html" class="button">Play Now</a>
                 <a href="#" class="button" style="background-color: var(--dark);">Learn More</a>
                 <button id="showDebate" class="button">Show Debate Demo</button>
             </div>
             <div class="hero-image">
-                <img src="/api/placeholder/500/300" alt="Students engaging in literary debate">
+                <img src="/api/placeholder/500/300" alt="Students engaging in literary debate" onclick="window.open(this.src, '_blank');" title="Click to open in new tab">
             </div>
         </section>
         
@@ -366,7 +373,7 @@
                 <div class="mode-icon">🏆</div>
                 <h3>Ranked Debate Mode</h3>
                 <p>Test your literary knowledge against other players. Engage in real-time debates using evidence from texts. Climb the leaderboard as you win!</p>
-                <a href="#" class="button">Start Ranking</a>
+                <a href="debate-mode.html" class="button">Start Debating</a>
             </div>
             
             <div class="mode-card">
@@ -387,7 +394,7 @@
                 <div class="mode-icon">📝</div>
                 <h3>Book Reading Mode</h3>
                 <p>Read and analyze various texts. Answer smart quizzes that test your understanding and critical thinking before you can debate on them.</p>
-                <a href="#" class="button">Start Reading</a>
+                <a href="reading-mode.html" class="button">Start Reading</a>
             </div>
         </section>
         
@@ -401,7 +408,7 @@
                     </div>
                 </div>
                 
-                <div class="timer">2:45</div>
+                <div class="timer">5:00</div>
                 
                 <div class="player-info">
                     <div>
@@ -518,6 +525,16 @@
         document.getElementById('showDebate').addEventListener('click', function() {
             document.getElementById('debateInterface').style.display = 'block';
             this.style.display = 'none';
+            
+            // Scroll to debate interface
+            document.getElementById('debateInterface').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+        
+        // Make hero image clickable to open in new tab
+        document.querySelector('.hero-image img').addEventListener('click', function() {
+            window.open(this.src, '_blank');
         });
     </script>
 </body>
