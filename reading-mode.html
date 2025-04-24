@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DebateWorm – Reading Mode</title>
   <style>
+    /* Paste styles from previous reading-mode.html */
     :root {
       --primary: #6A2C70;
       --secondary: #B83B5E;
@@ -17,401 +19,85 @@
       --error: #F44336;
       --info: #2196F3;
     }
-    
+
     * {box-sizing: border-box; transition: all 0.2s ease;}
-    
-    body {
-      margin: 0; 
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background-color: var(--background);
-      color: var(--dark);
-      line-height: 1.6;
-    }
-    
-    .container {
-      max-width: 1000px; 
-      margin: auto; 
-      padding: 2rem;
-    }
-    
-    h1, h2, h3, h4 {
-      margin: 0 0 .5rem 0;
-    }
-    
-    .button {
-      background: var(--secondary);
-      color: #fff;
-      border: none;
-      padding: .5rem 1rem;
-      border-radius: 5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .2s;
-    }
-    
-    .button:hover {
-      background: var(--accent);
-    }
-    
-    .button:disabled {
-      opacity: 0.5; 
-      cursor: not-allowed;
-    }
-    
-    .button.primary {
-      background: var(--primary);
-    }
-    
-    .button.success {
-      background: var(--success);
-    }
-    
-    /* Header with navigation */
-    header {
-      background-color: var(--primary);
-      color: white;
-      padding: 15px 0;
-    }
-    
-    .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .logo-icon {
-      background: var(--accent);
-      padding: 5px;
-      border-radius: 5px;
-    }
-    
-    nav ul {
-      display: flex;
-      list-style: none;
-      gap: 20px;
-      padding: 0;
-      margin: 0;
-    }
-    
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    
-    /* Header with mode tabs */
-    .mode-tabs {
-      display: flex;
-      margin-bottom: 1.5rem;
-      border-bottom: 2px solid var(--primary);
-    }
-    
-    .mode-tab {
-      padding: 0.75rem 1.5rem;
-      background: #e0e0e0;
-      border-radius: 8px 8px 0 0;
-      margin-right: 0.5rem;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      color: var(--dark);
-    }
-    
-    .mode-tab.active {
-      background: var(--primary);
-      color: white;
-    }
-    
-    /* Main reading card */
-    #readingCard {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.1);
-      padding: 1.5rem;
-      margin-top: 1rem;
-    }
-    
-    /* Progress bar */
-    .progress-container {
-      margin-bottom: 1.5rem;
-    }
-    
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background-color: #e0e0e0;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background-color: var(--accent);
-      transition: width 0.5s ease;
-    }
-    
-    .progress-steps {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-    }
-    
-    .progress-step {
-      font-size: 0.85rem;
-      color: #999;
-    }
-    
-    .progress-step.active {
-      color: var(--primary);
-      font-weight: bold;
-    }
-    
-    /* Book content */
-    .book-content {
-      padding: 1.5rem;
-      background-color: var(--background);
-      border-radius: 8px;
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 1.5rem;
-      font-size: 1.05rem;
-      line-height: 1.7;
-    }
-    
-    .book-content p {
-      margin-bottom: 1rem;
-    }
-    
-    .book-content p:first-of-type::first-letter {
-      font-size: 3.5em;
-      float: left;
-      padding-right: 8px;
-      color: var(--primary);
-      font-family: Georgia, serif;
-      line-height: 0.8;
-    }
-    
-    /* Question section */
-    .question-section {
-      background-color: var(--info);
-      color: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-    }
-    
-    .question-section h3 {
-      margin-top: 0;
-    }
-    
-    .question {
-      margin-bottom: 1.5rem;
-    }
-    
-    .question-text {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-    
-    .question-note {
-      font-size: 0.85rem;
-      opacity: 0.8;
-      margin-bottom: 0.5rem;
-    }
-    
-    .answer-input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 5px;
-      background-color: rgba(255,255,255,0.1);
-      color: white;
-      font-size: 1rem;
-      min-height: 100px;
-      margin-bottom: 0.5rem;
-    }
-    
-    .answer-input::placeholder {
-      color: rgba(255,255,255,0.6);
-    }
-    
-    /* Analysis Section */
-    .analysis-section {
-      padding: 1.5rem;
-      background-color: var(--light);
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-      display: none;
-    }
-    
-    .analysis-section h3 {
-      color: var(--primary);
-      margin-top: 0;
-    }
-    
-    .feedback-card {
-      background-color: white;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    .feedback-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    
-    .feedback-header h4 {
-      margin: 0;
-      color: var(--dark);
-    }
-    
-    .score-badge {
-      background-color: var(--primary);
-      color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-weight: bold;
-    }
-    
-    .feedback-text {
-      font-size: 0.95rem;
-    }
-    
-    .strength {
-      color: var(--success);
-      border-left: 3px solid var(--success);
-      padding-left: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    
-    .improvement {
-      color: var(--warning);
-      border-left: 3px solid var(--warning);
-      padding-left: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    
-    /* Completion Badge */
-    .completion-badge {
-      background-color: var(--success);
-      color: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      text-align: center;
-      display: none;
-    }
-    
-    .badge-icon {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .badge-text h3 {
-      margin-top: 0;
-    }
-    
-    .stats-row {
-      display: flex;
-      justify-content: space-around;
-      margin: 1rem 0;
-    }
-    
-    .stat-item {
-      text-align: center;
-    }
-    
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    
-    .stat-label {
-      font-size: 0.85rem;
-      opacity: 0.8;
-    }
-    
-    /* Book selection */
-    #bookSelector {
-      background: white;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    
-    #bookSelector h3 {
-      margin-top: 0;
-      color: var(--primary);
-    }
-    
-    .book-options {
-      display: flex;
-      gap: 1rem;
-      margin-top: 0.5rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-    }
-    
-    .book-option {
-      min-width: 150px;
-      background: var(--background);
-      padding: 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    
-    .book-option:hover {
-      transform: translateY(-3px);
-    }
-    
-    .book-option.active {
-      background: var(--accent);
-      color: white;
-    }
-    
-    .book-option h4 {
-      margin: 0 0 0.25rem 0;
-      font-size: 0.9rem;
-    }
-    
-    .book-option p {
-      margin: 0;
-      font-size: 0.8rem;
-      opacity: 0.8;
-    }
-    
-    /* Highlight feature */
-    .highlight {
-      background-color: rgba(249, 237, 105, 0.5);
-      cursor: pointer;
-    }
-    
-    .home-link {
-      display: inline-block;
-      margin-bottom: 15px;
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: bold;
-    }
-    
-    .home-link:hover {
-      text-decoration: underline;
-    }
+
+    body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: var(--background); color: var(--dark); line-height: 1.6; }
+    .container { max-width: 1000px; margin: auto; padding: 2rem; }
+    h1, h2, h3, h4 { margin: 0 0 .5rem 0; }
+    .button { background: var(--secondary); color: #fff; border: none; padding: .5rem 1rem; border-radius: 5px; font-weight: 700; cursor: pointer; transition: .2s; }
+    .button:hover { background: var(--accent); }
+    .button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .button.primary { background: var(--primary); }
+    .button.success { background: var(--success); }
+
+    header { background-color: var(--primary); color: white; padding: 15px 0; }
+    .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { background: var(--accent); padding: 5px; border-radius: 5px; }
+     .logo h1 { margin: 0 0 0 10px; font-size: 24px; }
+    nav ul { display: flex; list-style: none; gap: 20px; padding: 0; margin: 0; }
+    nav a { color: white; text-decoration: none; font-weight: bold; }
+     nav a.active { text-decoration: underline; }
+
+    .mode-tabs { display: flex; flex-wrap: wrap; margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary); gap: 5px;}
+    .mode-tab { padding: 0.75rem 1.5rem; background: #e0e0e0; border-radius: 8px 8px 0 0; font-weight: bold; cursor: pointer; text-decoration: none; color: var(--dark); white-space: nowrap;}
+    .mode-tab.active { background: var(--primary); color: white; }
+
+    #readingCard { background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,.1); padding: 1.5rem; margin-top: 1rem; }
+    .progress-container { margin-bottom: 1.5rem; }
+    .progress-bar { width: 100%; height: 8px; background-color: #e0e0e0; border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background-color: var(--accent); transition: width 0.5s ease; }
+    .progress-steps { display: flex; justify-content: space-between; margin-top: 8px; }
+    .progress-step { font-size: 0.85rem; color: #999; }
+    .progress-step.active { color: var(--primary); font-weight: bold; }
+
+    .book-content { padding: 1.5rem; background-color: var(--background); border: 1px solid #eee; border-radius: 8px; max-height: 450px; /* Increased height */ overflow-y: auto; margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.7; }
+    .book-content p { margin-bottom: 1rem; }
+    .book-content p:first-of-type::first-letter { font-size: 3.5em; float: left; padding: 0 8px 0 0; color: var(--primary); font-family: Georgia, serif; line-height: 0.8; margin-top: 5px; }
+
+    .question-section { background-color: var(--info); color: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; }
+    .question-section h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; margin-bottom: 15px;}
+    .question { margin-bottom: 1.5rem; }
+    .question-text { font-weight: bold; margin-bottom: 0.5rem; }
+    .question-note { font-size: 0.85rem; opacity: 0.8; margin-bottom: 0.5rem; }
+    .answer-input { width: 100%; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 5px; background-color: rgba(255,255,255,0.1); color: white; font-size: 1rem; min-height: 100px; margin-bottom: 0.5rem; }
+    .answer-input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .analysis-section { padding: 1.5rem; background-color: var(--light); border-radius: 8px; margin-bottom: 1.5rem; display: none; }
+    .analysis-section h3 { color: var(--primary); margin-top: 0; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px; margin-bottom: 15px; }
+    .feedback-card { background-color: white; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .feedback-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .feedback-header h4 { margin: 0; color: var(--dark); font-size: 1rem; }
+    .score-badge { background-color: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+    .feedback-text { font-size: 0.95rem; }
+    .strength { color: var(--success); border-left: 3px solid var(--success); padding-left: 0.5rem; margin-top: 0.5rem; font-size: 0.9rem; }
+    .improvement { color: var(--warning); border-left: 3px solid var(--warning); padding-left: 0.5rem; margin-top: 0.5rem; font-size: 0.9rem; }
+
+    .completion-badge { background-color: var(--success); color: white; padding: 1.5rem; border-radius: 8px; text-align: center; display: none; }
+    .badge-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .badge-text h3 { margin-top: 0; font-size: 1.5rem; }
+    .badge-text p { margin-bottom: 1rem; }
+    .stats-row { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 15px; margin: 1rem 0; }
+    .stat-item { text-align: center; }
+    .stat-value { font-size: 1.5rem; font-weight: bold; }
+    .stat-label { font-size: 0.8rem; opacity: 0.8; margin-top: 3px; display: block;}
+
+    #bookSelector { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    #bookSelector h3 { margin-top: 0; color: var(--primary); }
+    .book-options { display: flex; gap: 1rem; margin-top: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .book-option { min-width: 150px; background: var(--background); padding: 0.75rem; border-radius: 8px; cursor: pointer; transition: transform 0.2s; border: 1px solid #eee; }
+    .book-option:hover { transform: translateY(-3px); }
+    .book-option.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .book-option h4 { margin: 0 0 0.25rem 0; font-size: 0.9rem; }
+    .book-option p { margin: 0; font-size: 0.8rem; opacity: 0.8; }
+
+    .highlight { background-color: rgba(249, 237, 105, 0.6); /* More visible highlight */ cursor: pointer; }
+
+    .home-link { display: inline-block; margin-bottom: 15px; color: var(--primary); text-decoration: none; font-weight: bold; }
+    .home-link:hover { text-decoration: underline; }
+
+     footer { background-color: var(--dark); color: white; text-align: center; padding: 20px 0; margin-top: 40px; }
   </style>
 </head>
 <body>
@@ -423,35 +109,35 @@
       </div>
       <nav>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="#">Library</a></li>
-          <li><a href="#">Leaderboard</a></li>
-          <li><a href="#">Profile</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="library.html">Library</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li>
+            <li><a href="profile.html">Profile</a></li>
         </ul>
       </nav>
     </div>
   </header>
-  
+
   <div class="container">
     <a href="index.html" class="home-link">← Back to Home</a>
-    
-    <h1>DebateWorm 
+
+    <h1>Reading Mode
       <span style="font-size: 0.6em; vertical-align: middle; color: var(--secondary);">
-        Improving Reading Through Meaningful Discussion
+        Analyze Texts Deeply
       </span>
     </h1>
-    
+
     <div class="mode-tabs">
       <a href="debate-mode.html"><div class="mode-tab">Debate Mode</div></a>
       <a href="reading-mode.html"><div class="mode-tab active">Reading Mode</div></a>
-      <div class="mode-tab">Story Mode</div>
-      <div class="mode-tab">Practice Mode</div>
+      <!-- Removed Story Mode -->
+      <a href="practice-mode.html"><div class="mode-tab">Practice Mode</div></a>
     </div>
-    
+
     <div id="bookSelector">
-      <h3>Select a Book to Read</h3>
+      <h3>Select a Book to Read & Analyze</h3>
       <p>Choose a book to read, analyze, and prepare for future debates:</p>
-      
+
       <div class="book-options">
         <div class="book-option active" data-book="mockingbird">
           <h4>To Kill a Mockingbird</h4>
@@ -474,12 +160,12 @@
           <p>Mary Shelley</p>
         </div>
       </div>
-      
+
       <div style="margin-top: 1rem;">
         <button id="startReadingBtn" class="button">Start Reading</button>
       </div>
     </div>
-    
+
     <div id="readingCard" style="display: none;">
       <div class="progress-container">
         <div class="progress-bar">
@@ -491,214 +177,908 @@
           <div class="progress-step">Complete</div>
         </div>
       </div>
-      
-      <h2>To Kill a Mockingbird <span style="font-size: 0.7em; color: #666;">Chapter 11 excerpt</span></h2>
-      
+
+      <h2 id="readingTitle">To Kill a Mockingbird <span style="font-size: 0.7em; color: #666;">Chapter 11 excerpt</span></h2>
+
       <div class="book-content" id="bookContentSection">
-        <p>Atticus said to Jem one day, "I'd rather you shot at tin cans in the backyard, but I know you'll go after birds. Shoot all the blue jays you want, if you can hit 'em, but remember it's a sin to kill a mockingbird." That was the only time I ever heard Atticus say it was a sin to do something, and I asked Miss Maudie about it.</p>
-        
-        <p>"Your father's right," she said. "Mockingbirds don't do one thing but make music for us to enjoy. They don't eat up people's gardens, don't nest in corncribs, they don't do one thing but sing their hearts out for us. That's why it's a sin to kill a mockingbird."</p>
-        
-        <p>When he gave us our air-rifles Atticus wouldn't teach us to shoot. Uncle Jack instructed us in the rudiments thereof; he said Atticus wasn't interested in guns. Atticus said to Jem, "I'd rather you shot at tin cans in the backyard, but I know you'll go after birds. Shoot all the blue jays you want, if you can hit 'em, but remember it's a sin to kill a mockingbird."</p>
-        
-        <p>I was struggling hard to remember every detail about Tom Robinson's case. Sometimes I thought Atticus was fighting for Tom Robinson to show the town that he really wasn't a Confederate-gray-wearing, tree-climbing hot head, but a respectable, hardworking man. Atticus kept saying that the American courts were the great levelers, that whatever you might be in this life, when you walked through the courtroom doors, it all came down to what the evidence said.</p>
-        
-        <p>Much later, I would understand that he was trying to teach Jem and me something. "As you grow older," he said, "you'll see white men cheat black men every day of your life, but let me tell you something and don't you forget it—whenever a white man does that to a black man, no matter who he is, how rich he is, or how fine a family he comes from, that white man is trash."</p>
-        
-        <p>Atticus was speaking so quietly his last word crashed on our ears. I looked up, and his face was vehement. "There's nothing more sickening to me than a low-grade white man who'll take advantage of a Negro's ignorance. Don't fool yourselves—it's all adding up, and one of these days we're going to pay the bill for it. I hope it's not in you children's time."</p>
-        
-        <p>Jem was standing beside his bed. "It's all adding up," I said, "the verdict's already in the pocket. You've been giving 'em all the evidence, so hidden and plain—"</p>
-        
-        <p>"You're not supposed to understand it, Scout," Jem said. "It's beyond our ken. You were too small, but I can remember when Atticus defended some colored people and the courthouse was jammed with folks from the country, and 'bout twice the crowd we had Tuesday. They did the same thing, stayed extra quiet, all of 'em, and they took Tom Robinson back to jail and tried him behind closed doors. But that's just how it usually is."</p>
+        <!-- Content will be loaded by JS -->
+         <p>Select a book and click "Start Reading" to load the text here.</p>
       </div>
-      
+
       <div class="question-section">
         <h3>Critical Reading Analysis</h3>
         <p>Answer the following questions to demonstrate your understanding of the text. Your responses will be analyzed for depth of comprehension and critical thinking.</p>
-        
+
         <div class="question">
-          <div class="question-text">1. What is the symbolic meaning of the mockingbird in this novel, and how might it relate to Tom Robinson's character?</div>
-          <div class="question-note">Support your answer with evidence from the text.</div>
+          <div class="question-text" id="question1Text">1. Question placeholder 1?</div>
+          <div class="question-note">Support your answer with evidence from the text. Highlight text above to quote.</div>
           <textarea class="answer-input" id="question1Input" placeholder="Type your answer here..."></textarea>
         </div>
-        
+
         <div class="question">
-          <div class="question-text">2. Based on this excerpt, what does Atticus's statement about "white men cheating black men" reveal about the themes of the novel and his own character?</div>
-          <div class="question-note">Consider the historical context and Atticus's role in the community.</div>
+          <div class="question-text" id="question2Text">2. Question placeholder 2?</div>
+          <div class="question-note">Consider the context and character motivations.</div>
           <textarea class="answer-input" id="question2Input" placeholder="Type your answer here..."></textarea>
         </div>
-        
+
         <button id="submitAnswersBtn" class="button primary">Submit Answers</button>
       </div>
-      
+
       <div class="analysis-section" id="analysisSection">
         <h3>AI Analysis of Your Responses</h3>
         <p>Here's an evaluation of your critical reading responses:</p>
-        
+
         <div class="feedback-card">
           <div class="feedback-header">
-            <h4>Question 1: Symbolic Meaning of the Mockingbird</h4>
-            <div class="score-badge">8/10</div>
+            <h4 id="feedbackQ1Title">Question 1 Feedback</h4>
+            <div class="score-badge" id="feedbackQ1Score">--/10</div>
           </div>
           <div class="feedback-text">
-            <p>Your response demonstrates a strong understanding of the mockingbird symbol and its connection to Tom Robinson as an innocent figure who is harmed despite doing no wrong. You effectively cited evidence from Miss Maudie's explanation about mockingbirds not harming anyone but "singing their hearts out."</p>
-            <div class="strength">Strong connection between the mockingbird's innocence and Tom Robinson's situation.</div>
-            <div class="improvement">Consider elaborating on how this symbol extends to other characters in the novel who might also represent "mockingbirds."</div>
+            <p id="feedbackQ1Text">Analysis pending...</p>
+            <div class="strength" id="feedbackQ1Strength" style="display: none;">Strength identified.</div>
+            <div class="improvement" id="feedbackQ1Improvement" style="display: none;">Area for improvement noted.</div>
           </div>
         </div>
-        
+
         <div class="feedback-card">
           <div class="feedback-header">
-            <h4>Question 2: Analysis of Atticus's Statement</h4>
-            <div class="score-badge">9/10</div>
+            <h4 id="feedbackQ2Title">Question 2 Feedback</h4>
+            <div class="score-badge" id="feedbackQ2Score">--/10</div>
           </div>
           <div class="feedback-text">
-            <p>Excellent analysis of Atticus's statement about "white men cheating black men." You identified the core themes of racial injustice and moral integrity, while noting how Atticus stands apart from his community through his principled stance. Your response shows deep comprehension of both the historical context and character motivation.</p>
-            <div class="strength">Thorough examination of how Atticus's statement connects to broader themes of justice and integrity.</div>
-            <div class="improvement">You could strengthen your response by noting how Atticus predicts future consequences ("one of these days we're going to pay the bill for it"), suggesting his awareness of historical change.</div>
+             <p id="feedbackQ2Text">Analysis pending...</p>
+            <div class="strength" id="feedbackQ2Strength" style="display: none;">Strength identified.</div>
+            <div class="improvement" id="feedbackQ2Improvement" style="display: none;">Area for improvement noted.</div>
           </div>
         </div>
-        
+
         <div style="margin-top: 1.5rem;">
-          <h4>Overall Reading Comprehension Score: 85%</h4>
-          <p>You've demonstrated strong critical reading skills and a good understanding of the text's themes and symbolism. You're now eligible to participate in debates about To Kill a Mockingbird!</p>
+          <h4 id="overallScoreText">Overall Reading Comprehension Score: --%</h4>
+          <p id="eligibilityText">Complete the analysis to see if you're eligible for debates on this text!</p>
           <button id="completeReadingBtn" class="button success">Complete & Unlock Debates</button>
         </div>
       </div>
-      
+
       <div class="completion-badge" id="completionBadge">
         <div class="badge-icon">🏆</div>
         <div class="badge-text">
-          <h3>Reading Analysis Complete!</h3>
-          <p>You've successfully analyzed Chapter 11 of To Kill a Mockingbird and can now participate in debates about this text.</p>
+          <h3 id="completionTitle">Reading Analysis Complete!</h3>
+          <p id="completionText">You've successfully analyzed the excerpt and can now participate in debates about this text.</p>
         </div>
-        
+
         <div class="stats-row">
           <div class="stat-item">
-            <div class="stat-value">85%</div>
+            <div class="stat-value" id="completionScore">--%</div>
             <div class="stat-label">Comprehension</div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">+75</div>
+            <div class="stat-value" id="completionXP">+??</div>
             <div class="stat-label">XP Gained</div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">🔍</div>
-            <div class="stat-label">Critical Reader Badge</div>
+            <div class="stat-value" id="completionBadgeIcon">❓</div>
+            <div class="stat-label">Badge Earned</div>
           </div>
         </div>
-        
+
         <a href="debate-mode.html" class="button">Find a Debate</a>
-        <button id="readMoreBtn" class="button" style="background-color: var(--dark); margin-left: 1rem;">Read More Chapters</button>
+        <button id="readMoreBtn" class="button" style="background-color: var(--dark); margin-left: 1rem;">Read Another Book</button>
       </div>
     </div>
   </div>
-  
+
+    <footer> <!-- Added Footer -->
+        <p>&copy; 2025 DebateWorm - Making Reading Interactive and Fun</p>
+    </footer>
+
   <script>
-    // DOM Elements
-    const startReadingBtn = document.getElementById('startReadingBtn');
-    const readingCard = document.getElementById('readingCard');
-    const bookSelector = document.getElementById('bookSelector');
-    const submitAnswersBtn = document.getElementById('submitAnswersBtn');
-    const analysisSection = document.getElementById('analysisSection');
-    const completeReadingBtn = document.getElementById('completeReadingBtn');
-    const completionBadge = document.getElementById('completionBadge');
-    const bookContentSection = document.getElementById('bookContentSection');
-    const question1Input = document.getElementById('question1Input');
-    const question2Input = document.getElementById('question2Input');
-    const readMoreBtn = document.getElementById('readMoreBtn');
-    const bookOptions = document.querySelectorAll('.book-option');
-    
-    // Book selection
-    bookOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        bookOptions.forEach(o => o.classList.remove('active'));
-        option.classList.add('active');
-      });
-    });
-    
-    // Start reading button
-    startReadingBtn.addEventListener('click', () => {
-      bookSelector.style.display = 'none';
-      readingCard.style.display = 'block';
-      
-      // Highlight first paragraph after a delay to draw attention
-      setTimeout(() => {
-        const firstParagraph = bookContentSection.querySelector('p:first-child');
-        firstParagraph.classList.add('highlight');
-        setTimeout(() => {
-          firstParagraph.classList.remove('highlight');
-        }, 1500);
-      }, 500);
-    });
-    
-    // Text highlighting functionality
-    bookContentSection.addEventListener('mouseup', () => {
-      const selection = window.getSelection();
-      const selectedText = selection.toString().trim();
-      
-      if (selectedText.length > 0) {
-        // If an answer field is focused, add the text there
-        if (document.activeElement === question1Input || document.activeElement === question2Input) {
-          document.activeElement.value += ' "' + selectedText + '" ';
+    document.addEventListener('DOMContentLoaded', () => {
+        // DOM Elements
+        const startReadingBtn = document.getElementById('startReadingBtn');
+        const readingCard = document.getElementById('readingCard');
+        const bookSelector = document.getElementById('bookSelector');
+        const submitAnswersBtn = document.getElementById('submitAnswersBtn');
+        const analysisSection = document.getElementById('analysisSection');
+        const completeReadingBtn = document.getElementById('completeReadingBtn');
+        const completionBadge = document.getElementById('completionBadge');
+        const bookContentSection = document.getElementById('bookContentSection');
+        const question1Input = document.getElementById('question1Input');
+        const question2Input = document.getElementById('question2Input');
+        const readMoreBtn = document.getElementById('readMoreBtn');
+        const bookOptions = document.querySelectorAll('.book-option');
+        const readingTitle = document.getElementById('readingTitle');
+        const question1Text = document.getElementById('question1Text');
+        const question2Text = document.getElementById('question2Text');
+        const feedbackQ1Title = document.getElementById('feedbackQ1Title');
+        const feedbackQ1Score = document.getElementById('feedbackQ1Score');
+        const feedbackQ1Text = document.getElementById('feedbackQ1Text');
+        const feedbackQ1Strength = document.getElementById('feedbackQ1Strength');
+        const feedbackQ1Improvement = document.getElementById('feedbackQ1Improvement');
+         const feedbackQ2Title = document.getElementById('feedbackQ2Title');
+        const feedbackQ2Score = document.getElementById('feedbackQ2Score');
+        const feedbackQ2Text = document.getElementById('feedbackQ2Text');
+        const feedbackQ2Strength = document.getElementById('feedbackQ2Strength');
+        const feedbackQ2Improvement = document.getElementById('feedbackQ2Improvement');
+        const overallScoreText = document.getElementById('overallScoreText');
+        const eligibilityText = document.getElementById('eligibilityText');
+        const completionTitle = document.getElementById('completionTitle');
+        const completionText = document.getElementById('completionText');
+        const completionScore = document.getElementById('completionScore');
+        const completionXP = document.getElementById('completionXP');
+        const completionBadgeIcon = document.getElementById('completionBadgeIcon');
+        const progressBarFill = document.querySelector('.progress-fill');
+        const progressSteps = document.querySelectorAll('.progress-step');
+
+
+        // Sample Data (Replace with actual content loading logic if possible)
+        const bookData = {
+            mockingbird: {
+                title: "To Kill a Mockingbird",
+                excerptTitle: "Chapter 11 Excerpt",
+                content: `<p>Atticus said to Jem one day, "I'd rather you shot at tin cans in the backyard, but I know you'll go after birds. Shoot all the blue jays you want, if you can hit 'em, but remember it's a sin to kill a mockingbird." That was the only time I ever heard Atticus say it was a sin to do something, and I asked Miss Maudie about it.</p><p>"Your father's right," she said. "Mockingbirds don't do one thing but make music for us to enjoy... they don't do one thing but sing their hearts out for us. That's why it's a sin to kill a mockingbird."</p><p>"As you grow older," he said, "you'll see white men cheat black men every day of your life, but let me tell you something and don't you forget it—whenever a white man does that to a black man, no matter who he is, how rich he is, or how fine a family he comes from, that white man is trash."</p><p>Atticus was speaking so quietly his last word crashed on our ears... "There's nothing more sickening to me than a low-grade white man who'll take advantage of a Negro's ignorance. Don't fool yourselves—it's all adding up, and one of these days we're going to pay the bill for it."</p>`,
+                q1: "What is the symbolic meaning of the mockingbird, and how might it relate to Tom Robinson?",
+                q2: "What does Atticus's statement about 'white men cheating black men' reveal about the novel's themes and his character?",
+                feedback: {
+                    q1: { score: 8, text: "Good connection between the symbol and Tom. Explained innocence effectively.", strength: "Strong symbolic link.", improvement: "Consider other 'mockingbirds'." },
+                    q2: { score: 9, text: "Excellent analysis of themes (justice, integrity) and Atticus's stance.", strength: "Linked statement to core themes.", improvement: "Could note the predictive element." }
+                }
+            },
+             gatsby: {
+                title: "The Great Gatsby",
+                excerptTitle: "Chapter 9 Excerpt",
+                content: `<p>Gatsby believed in the green light, the orgastic future that year by year recedes before us. It eluded us then, but that’s no matter—tomorrow we will run faster, stretch out our arms farther.... And one fine morning——</p><p>So we beat on, boats against the current, borne back ceaselessly into the past.</p><p>He had come a long way to this blue lawn, and his dream must have seemed so close that he could hardly fail to grasp it. He did not know that it was already behind him, somewhere back in that vast obscurity beyond the city, where the dark fields of the republic rolled on under the night.</p>`,
+                q1: "What does the 'green light' symbolize for Gatsby, according to the narrator?",
+                q2: "Explain the meaning of the final line: 'So we beat on, boats against the current, borne back ceaselessly into the past.' How does it summarize a key theme?",
+                 feedback: {
+                    q1: { score: 7, text: "Correctly identified the green light with Gatsby's dream and hope.", strength: "Understood core symbolism.", improvement: "Connect it more explicitly to the past/future theme." },
+                    q2: { score: 8, text: "Good explanation of the struggle against the past and the cyclical nature of human effort.", strength: "Captured the theme of inescapable past.", improvement: "Link to the American Dream idea." }
+                }
+            },
+             "1984": {
+                title: "1984",
+                excerptTitle: "Part 1 Excerpt",
+                content: `<p>WAR IS PEACE<br>FREEDOM IS SLAVERY<br>IGNORANCE IS STRENGTH.</p><p>Who controls the past controls the future. Who controls the present controls the past.</p><p>It was a bright cold day in April, and the clocks were striking thirteen. Winston Smith, his chin nuzzled into his breast in an effort to escape the vile wind, slipped quickly through the glass doors of Victory Mansions, though not quickly enough to prevent a swirl of gritty dust from entering along with him.</p><p>BIG BROTHER IS WATCHING YOU.</p>`,
+                q1: "What is the purpose of the Party slogans like 'War is Peace'?",
+                q2: "Explain the concept of 'doublethink' based on the idea that 'Who controls the past controls the future'.",
+                 feedback: {
+                    q1: { score: 9, text: "Excellent grasp of paradoxical language used for psychological control and reality manipulation.", strength: "Identified the core function of the slogans.", improvement: "Mention Newspeak connection briefly." },
+                    q2: { score: 8, text: "Good explanation of altering history to control the present and future perception.", strength: "Understood the link between past control and future control.", improvement: "Use the specific term 'doublethink' if applicable." }
+                }
+            },
+             // Add Hamlet and Frankenstein similarly
+             hamlet: { title: "Hamlet", excerptTitle: "Act III, Scene 1", content: "<p>'To be, or not to be, that is the question...' (Add more excerpt)</p>", q1:"Analyze Hamlet's famous soliloquy.", q2:"What themes are explored in this speech?", feedback: {q1:{score: 7}, q2:{score: 8}}},
+             frankenstein: { title: "Frankenstein", excerptTitle: "Chapter 5", content: "<p>'It was on a dreary night of November that I beheld the accomplishment of my toils...' (Add more excerpt)</p>", q1:"Describe Victor's reaction to his creation.", q2:"What does this reveal about Victor's character and the theme of creation?", feedback: {q1:{score: 8}, q2:{score: 9}}}
+        };
+
+        let currentBookKey = 'mockingbird'; // Default
+
+        // Book selection
+        bookOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                bookOptions.forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                currentBookKey = option.dataset.book;
+                // Reset UI if reading card is visible
+                if (readingCard.style.display === 'block') {
+                     resetReadingUI();
+                     loadBookContent(currentBookKey);
+                }
+            });
+        });
+
+        function loadBookContent(bookKey) {
+             const data = bookData[bookKey];
+             if (!data) {
+                 console.error("Book data not found for key:", bookKey);
+                 // Display error message to user?
+                 bookContentSection.innerHTML = "<p>Error: Could not load book content.</p>";
+                 return;
+            }
+
+            readingTitle.innerHTML = `${data.title} <span style="font-size: 0.7em; color: #666;">${data.excerptTitle}</span>`;
+            bookContentSection.innerHTML = data.content;
+            question1Text.textContent = `1. ${data.q1}`;
+            question2Text.textContent = `2. ${data.q2}`;
+             feedbackQ1Title.textContent = `Question 1: ${data.title}`; // Update feedback titles
+             feedbackQ2Title.textContent = `Question 2: ${data.title}`;
         }
-      }
+
+         function resetReadingUI() {
+            progressBarFill.style.width = '33%';
+            progressSteps.forEach(step => step.classList.remove('active'));
+            progressSteps[0].classList.add('active');
+            question1Input.value = '';
+            question2Input.value = '';
+            question1Input.disabled = false;
+            question2Input.disabled = false;
+            submitAnswersBtn.disabled = false;
+            analysisSection.style.display = 'none';
+            completionBadge.style.display = 'none';
+             // Reset feedback panel placeholders
+            feedbackQ1Score.textContent = '--/10';
+            feedbackQ1Text.textContent = 'Analysis pending...';
+            feedbackQ1Strength.style.display = 'none';
+            feedbackQ1Improvement.style.display = 'none';
+            feedbackQ2Score.textContent = '--/10';
+            feedbackQ2Text.textContent = 'Analysis pending...';
+            feedbackQ2Strength.style.display = 'none';
+            feedbackQ2Improvement.style.display = 'none';
+            overallScoreText.textContent = 'Overall Reading Comprehension Score: --%';
+            eligibilityText.textContent = "Complete the analysis to see if you're eligible for debates on this text!";
+
+         }
+
+        // Start reading button
+        startReadingBtn.addEventListener('click', () => {
+            bookSelector.style.display = 'none';
+            readingCard.style.display = 'block';
+            resetReadingUI(); // Reset state when starting
+            loadBookContent(currentBookKey); // Load selected book
+
+            // Optional highlight
+            setTimeout(() => {
+                const firstParagraph = bookContentSection.querySelector('p:first-child');
+                if (firstParagraph) {
+                    firstParagraph.classList.add('highlight');
+                    setTimeout(() => firstParagraph.classList.remove('highlight'), 1500);
+                }
+            }, 500);
+        });
+
+        // Text highlighting functionality (remains the same)
+         bookContentSection.addEventListener('mouseup', () => {
+            const selection = window.getSelection();
+            const selectedText = selection.toString().trim();
+
+            if (selectedText.length > 0 && selectedText.length < 300) { // Add length limit
+                const activeInput = document.activeElement;
+                 if (activeInput === question1Input || activeInput === question2Input) {
+                     // Append as a quote, ensuring not too much text is added at once
+                     activeInput.value += ` "${selectedText}" `;
+                 }
+            }
+        });
+
+        // Submit answers button
+        submitAnswersBtn.addEventListener('click', () => {
+            const answer1 = question1Input.value.trim();
+            const answer2 = question2Input.value.trim();
+            const minLength = 30; // Reduced minimum length for demo
+
+            if (answer1.length < minLength || answer2.length < minLength) {
+                alert(`Please provide more detailed answers (at least ${minLength} characters for each question).`);
+                return;
+            }
+
+            progressBarFill.style.width = '66%';
+            progressSteps[1].classList.add('active');
+            analysisSection.style.display = 'block';
+            analysisSection.scrollIntoView({ behavior: 'smooth' });
+
+            question1Input.disabled = true;
+            question2Input.disabled = true;
+            submitAnswersBtn.disabled = true;
+
+            // Simulate AI Analysis and display feedback
+             const data = bookData[currentBookKey];
+             if(data && data.feedback) {
+                 const fb1 = data.feedback.q1;
+                 const fb2 = data.feedback.q2;
+                 const overallScore = Math.round(((fb1.score + fb2.score) / 20) * 100);
+
+                 feedbackQ1Score.textContent = `${fb1.score}/10`;
+                 feedbackQ1Text.textContent = fb1.text;
+                 feedbackQ1Strength.textContent = fb1.strength || '';
+                 feedbackQ1Strength.style.display = fb1.strength ? 'block' : 'none';
+                 feedbackQ1Improvement.textContent = fb1.improvement || '';
+                 feedbackQ1Improvement.style.display = fb1.improvement ? 'block' : 'none';
+
+
+                 feedbackQ2Score.textContent = `${fb2.score}/10`;
+                 feedbackQ2Text.textContent = fb2.text;
+                 feedbackQ2Strength.textContent = fb2.strength || '';
+                 feedbackQ2Strength.style.display = fb2.strength ? 'block' : 'none';
+                 feedbackQ2Improvement.textContent = fb2.improvement || '';
+                 feedbackQ2Improvement.style.display = fb2.improvement ? 'block' : 'none';
+
+                 overallScoreText.textContent = `Overall Reading Comprehension Score: ${overallScore}%`;
+                  if (overallScore >= 70) {
+                     eligibilityText.textContent = "Excellent analysis! You're now eligible to participate in debates on this text.";
+                     completeReadingBtn.disabled = false; // Enable completion
+                 } else {
+                     eligibilityText.textContent = "Good effort! Review the feedback to improve understanding. Debates remain locked for now.";
+                     completeReadingBtn.disabled = true; // Keep disabled
+                 }
+             } else {
+                 // Fallback if no feedback data
+                 feedbackQ1Text.textContent = 'Analysis simulation complete.';
+                 feedbackQ2Text.textContent = 'Analysis simulation complete.';
+                 overallScoreText.textContent = 'Overall Score: Simulated';
+                 eligibilityText.textContent = "Analysis complete. Debate eligibility simulated.";
+                 completeReadingBtn.disabled = false; // Enable completion for demo
+             }
+        });
+
+        // Complete reading button
+        completeReadingBtn.addEventListener('click', () => {
+            progressBarFill.style.width = '100%';
+            progressSteps[2].classList.add('active');
+            completionBadge.style.display = 'block';
+            analysisSection.style.display = 'none'; // Hide analysis
+            completionBadge.scrollIntoView({ behavior: 'smooth' });
+
+             // Populate completion badge
+            const data = bookData[currentBookKey];
+            const score = Math.round(((data.feedback.q1.score + data.feedback.q2.score) / 20) * 100);
+            const xp = 50 + Math.round(score / 2); // Example XP calculation
+            let badge = '❓';
+             let badgeTitle = "Badge Placeholder";
+            if (score >= 80) { badge = '🔍'; badgeTitle = "Critical Reader"; }
+            else if (score >= 60) { badge = '📖'; badgeTitle = "Attentive Reader"; }
+
+            completionTitle.textContent = `Analysis Complete: ${data.title}`;
+             completionText.textContent = `You've successfully analyzed the ${data.excerptTitle} and can now participate in debates about this text.`;
+            completionScore.textContent = `${score}%`;
+            completionXP.textContent = `+${xp}`;
+            completionBadgeIcon.textContent = badge;
+             completionBadgeIcon.title = badgeTitle; // Add tooltip title
+
+        });
+
+        // Read more button -> Go back to book selection
+        readMoreBtn.addEventListener('click', () => {
+             readingCard.style.display = 'none'; // Hide reading card
+            bookSelector.style.display = 'block'; // Show selector again
+            completionBadge.style.display = 'none'; // Hide completion badge
+             // Scroll to top or selector
+             bookSelector.scrollIntoView({ behavior: 'smooth'});
+        });
+
     });
-    
-    // Submit answers button
-    submitAnswersBtn.addEventListener('click', () => {
-      const answer1 = question1Input.value.trim();
-      const answer2 = question2Input.value.trim();
-      
-      if (answer1.length < 50 || answer2.length < 50) {
-        alert('Please provide more detailed answers (at least 50 characters for each question).');
-        return;
-      }
-      
-      // Update progress bar
-      document.querySelector('.progress-fill').style.width = '66%';
-      document.querySelectorAll('.progress-step')[1].classList.add('active');
-      
-      // Show analysis section
-      analysisSection.style.display = 'block';
-      
-      // Scroll to analysis section
-      analysisSection.scrollIntoView({ behavior: 'smooth' });
-      
-      // Disable inputs
-      question1Input.disabled = true;
-      question2Input.disabled = true;
-      submitAnswersBtn.disabled = true;
-    });
-    
-    // Complete reading button
-    completeReadingBtn.addEventListener('click', () => {
-      // Update progress bar
-      document.querySelector('.progress-fill').style.width = '100%';
-      document.querySelectorAll('.progress-step')[2].classList.add('active');
-      
-      // Show completion badge
-      completionBadge.style.display = 'block';
-      
-      // Hide analysis section
-      analysisSection.style.display = 'none';
-      
-      // Scroll to completion badge
-      completionBadge.scrollIntoView({ behavior: 'smooth' });
-    });
-    
-    // Read more button
-    readMoreBtn.addEventListener('click', () => {
-      alert('In the full application, this would load more chapters from To Kill a Mockingbird for you to read and analyze.');
-    });
-    
-    // Mode tab click handler
-    document.querySelectorAll('.mode-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        if (!tab.classList.contains('active') && !tab.parentElement.href) {
-          alert('This is a demo of the Reading Mode only. The full application would include all modes.');
+  </script>
+</body>
+</html>
+```
+
+---
+
+**7. `debate-mode.html` (Corrected & Updated)**
+*   Corrected nav links.
+*   Removed Story Mode tab.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DebateWorm – Debate Mode</title>
+  <style>
+    /* Paste styles from previous debate-mode.html */
+     :root {
+      --primary: #6A2C70;
+      --secondary: #B83B5E;
+      --accent: #F08A5D;
+      --light: #F9ED69;
+      --dark: #3D315B;
+      --background: #F5F5F5;
+      --success: #4CAF50;
+      --info: #2196F3;
+    }
+
+    * { box-sizing: border-box; transition: all .2s ease; }
+
+    body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background: var(--background); color: var(--dark); line-height: 1.6; }
+    .container { max-width: 1200px; /* Wider container */ margin: auto; padding: 2rem; }
+    h1, h2, h3 { margin: 0 0 .5rem 0; }
+    .button { background: var(--secondary); color: #fff; border: none; padding: .5rem 1rem; border-radius: 5px; font-weight: 700; cursor: pointer; }
+    .button:hover { background: var(--accent); }
+    .button:disabled { opacity: .5; cursor: not-allowed; }
+
+    header { background-color: var(--primary); color: white; padding: 15px 0; }
+    .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { background: var(--accent); padding: 5px; border-radius: 5px; }
+     .logo h1 { margin: 0 0 0 10px; font-size: 24px; }
+    nav ul { display: flex; list-style: none; gap: 20px; padding: 0; margin: 0;}
+    nav a { color: white; text-decoration: none; font-weight: bold; }
+    nav a.active { text-decoration: underline; }
+
+    .mode-tabs { display: flex; flex-wrap: wrap; margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary); gap: 5px;}
+    .mode-tab { padding: .75rem 1.5rem; background: #e0e0e0; border-radius: 8px 8px 0 0; font-weight: bold; cursor: pointer; text-decoration: none; color: var(--dark); white-space: nowrap;}
+    .mode-tab.active { background: var(--primary); color: #fff; }
+
+    /* Debate area layout */
+    .debate-container { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 20px; margin-top: 20px; }
+    .text-panel, .notes-panel { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 20px; min-height: 500px; overflow-y: auto;}
+     .text-panel h3, .notes-panel h3 { margin-top: 0; color: var(--primary); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;}
+     .text-panel p, .notes-panel p { font-size: 0.95rem; line-height: 1.6; color: #444;}
+    .notes-panel textarea { width: 100%; height: calc(100% - 70px); padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 0.9rem; }
+
+    .debate-panel { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .prompt-box { border: 2px solid var(--primary); padding: 15px; margin: 0 0 20px 0; text-align: center; background: #f9f5fa; border-radius: 8px; }
+     .prompt-box h3 { margin: 0 0 5px 0; color: var(--primary); font-size: 1.1rem;}
+     .prompt-box p { margin: 0; font-size: 0.95rem; }
+
+    .timer-display { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 20px 0; }
+    .hourglass-icon { font-size: 1.8rem; color: var(--secondary); }
+    .timer-text { font-size: 1.1rem; font-weight: bold; text-align: center;}
+     .timer-text div:first-child { font-size: 0.8rem; color: #555; text-transform: uppercase; }
+     .timer-text div:last-child { color: var(--secondary); }
+
+    /* Rebuttal Box hidden by default, shown by JS */
+    .rebuttal-box { border: 3px solid var(--accent); padding: 15px; margin: 15px 0; text-align: center; background: #fff8f0; border-radius: 8px; display: none; } /* Initially hidden */
+     .rebuttal-box p { margin: 0; font-weight: bold; color: var(--accent); }
+
+
+    #messagesNew { background: var(--background); border-radius: 8px; padding: 1rem; height: 280px; /* Slightly taller */ overflow-y: auto; margin-bottom: 1rem; border: 1px solid #eee; }
+    .msg { padding: .75rem 1rem; border-radius: 8px; margin: .5rem 0; max-width: 90%; line-height: 1.5; }
+    .msg strong { display: block; margin-bottom: .25rem; font-size: .85rem; }
+    .msg .evidence { font-style: italic; font-size: .9rem; margin-top: .5rem; padding-top: .5rem; border-top: 1px dashed rgba(0,0,0,.1); }
+    .you { background: var(--secondary); color: #fff; margin-left: auto; }
+    .you .evidence { border-top: 1px dashed rgba(255,255,255,.3); }
+    .opp { background: var(--light); color: var(--dark); }
+    .system { background: var(--dark); color: #fff; text-align: center; max-width: 100%; font-size: 0.9rem; padding: 0.5rem 1rem; }
+
+    #inputRowNew { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    #inputRowNew input { flex: 1; padding: .75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+
+    /* Player Display Area */
+    .debate-players { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 25px; position: relative; padding-bottom: 30px; /* Space for worms */}
+    .player { display: flex; flex-direction: column; align-items: center; text-align: center; width: 80px; /* Give some width */}
+    .player-icon { font-size: 3rem; margin-bottom: 5px; }
+     .player-name { font-weight: bold; font-size: 0.9rem; line-height: 1.2; }
+
+    .worm-icons { display: flex; justify-content: center; position: absolute; bottom: 0px; /* Adjusted position */ left: 50%; transform: translateX(-50%); width: 100%; gap: 40px; /* Space between worms */ }
+    .worm-icon { font-size: 2.5rem; } /* Larger worms */
+
+    /* AI Moderator Panel - Remains the same */
+    #aiModeratorPanel { margin-top: 1.5rem; padding: 1rem; background: var(--info); color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,.1); }
+    #aiModeratorPanel h4 { margin-top: 0; display: flex; align-items: center; gap: .5rem; font-size: 1.1rem; }
+     #aiModeratorPanel p { margin: 5px 0; font-size: 0.95rem; line-height: 1.5;}
+    #scorecards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 1rem; }
+    .scorecard { background: rgba(255,255,255,.15); border-radius: 8px; padding: .75rem; text-align: center;}
+    .scorecard h5 { margin: 0 0 .5rem 0; font-size: .8rem; opacity: .9; text-transform: uppercase;}
+    .score { font-size: 1.4rem; font-weight: 700; }
+    .score-comment { font-size: .75rem; margin-top: .25rem; opacity: 0.8;}
+
+    /* Book Selector */
+    #bookSelector { background: #fff; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,.1); }
+     #bookSelector h3 { margin-top: 0; color: var(--primary); }
+     .book-options { display: flex; gap: 1rem; margin-top: .5rem; overflow-x: auto; padding-bottom: .5rem; }
+     .book-option { min-width: 150px; background: var(--background); padding: .75rem; border-radius: 8px; cursor: pointer; border: 1px solid #eee; }
+     .book-option:hover { transform: translateY(-3px); }
+     .book-option.active { background: var(--accent); color: #fff; border-color: var(--accent);}
+      .book-option h4 { margin: 0 0 0.25rem 0; font-size: 0.9rem; }
+      .book-option p { margin: 0; font-size: 0.8rem; opacity: 0.8; }
+
+
+    .home-link { display: inline-block; margin-bottom: 15px; color: var(--primary); text-decoration: none; font-weight: bold; }
+    .home-link:hover { text-decoration: underline; }
+
+    /* Original Debate Card - Hidden by Default */
+    #demoCard { display: none; }
+
+     footer { background-color: var(--dark); color: white; text-align: center; padding: 20px 0; margin-top: 40px; }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <div class="logo-icon">🪱📚</div>
+        <h1>DebateWorm</h1>
+      </div>
+      <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="library.html">Library</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="index.html" class="home-link">← Back to Home</a>
+
+    <h1>Debate Mode <span style="font-size:.6em;color:var(--secondary)">Challenge Other Readers</span></h1>
+
+    <!-- Tabs -->
+    <div class="mode-tabs">
+      <a href="debate-mode.html"><div class="mode-tab active">Debate Mode</div></a>
+      <a href="reading-mode.html"><div class="mode-tab">Reading Mode</div></a>
+      <!-- Removed Story Mode -->
+      <a href="practice-mode.html"><div class="mode-tab">Practice Mode</div></a>
+    </div>
+
+    <!-- Book selector -->
+    <div id="bookSelector">
+      <h3>Select a Book to Debate</h3>
+      <p>Choose a book you've analyzed and are ready to debate:</p>
+      <div class="book-options">
+        <div class="book-option active" data-book="mockingbird"><h4>To Kill a Mockingbird</h4><p>Harper Lee</p></div>
+        <div class="book-option" data-book="gatsby"><h4>The Great Gatsby</h4><p>F. Scott Fitzgerald</p></div>
+        <div class="book-option" data-book="1984"><h4>1984</h4><p>George Orwell</p></div>
+        <div class="book-option" data-book="hamlet"><h4>Hamlet</h4><p>William Shakespeare</p></div>
+        <div class="book-option" data-book="frankenstein"><h4>Frankenstein</h4><p>Mary Shelley</p></div>
+      </div>
+      <button id="startDebateBtn" class="button" style="margin-top:1rem">Start Debate</button>
+    </div>
+
+    <!-- New Debate Interface -->
+    <div id="newDebateInterface" style="display:none;">
+      <div class="debate-container">
+        <div class="text-panel" id="textPanelDebate">
+          <h3>Text: To Kill a Mockingbird</h3>
+           <p>"You never really understand a person until you consider things from his point of view… until you climb inside of his skin and walk around in it."</p>
+           <p>"Simply because we were licked a hundred years before we started is no reason for us not to try to win."</p>
+           <p>"The one thing that doesn't abide by majority rule is a person's conscience."</p>
+           <p>"I wanted you to see what real courage is... It's when you know you're licked before you begin but you begin anyway..."</p>
+        </div>
+
+        <div class="debate-panel">
+          <div class="prompt-box">
+            <h3>Debate Prompt:</h3>
+            <p id="debatePromptText">Is Atticus Finch's primary motivation his personal conscience or setting an example for his children and Maycomb?</p>
+          </div>
+
+          <div class="timer-display">
+            <div class="hourglass-icon">⌛</div>
+            <div class="timer-text">
+              <div id="timerPhase">Argument Phase</div>
+              <div id="timerNew">5:00 remaining</div>
+            </div>
+          </div>
+
+          <!-- Rebuttal Box (Initially hidden) -->
+          <div class="rebuttal-box" id="rebuttalBox">
+            <p>Rebuttal Phase: Respond to your opponent!</p>
+          </div>
+
+          <div id="messagesNew">
+            <div class="msg system"><strong>Finding opponent... Found LiteraryTitan!</strong><p>Debate begins. You are arguing [Your Stance]. 5 mins for opening arguments.</p></div>
+            <div class="msg opp"><strong>LiteraryTitan:</strong> Atticus is clearly driven by his conscience, as shown when he says it's the 'one thing that doesn't abide by majority rule.' Defending Tom was non-negotiable for him personally.</div>
+          </div>
+
+          <div id="inputRowNew">
+            <input id="msgInputNew" type="text" placeholder="Type your argument or rebuttal…">
+            <button id="sendBtnNew" class="button">Send</button>
+          </div>
+
+          <div class="debate-players">
+            <div class="player">
+              <div class="player-icon">👤</div>
+              <div class="player-name">BookWorm74 (You)</div>
+            </div>
+            <div class="worm-icons">
+              <div class="worm-icon">🐛</div>
+              <div class="worm-icon">🪱</div>
+            </div>
+            <div class="player">
+              <div class="player-icon">👤</div>
+              <div class="player-name">LiteraryTitan</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notes-panel">
+          <h3>Your Notes</h3>
+          <p>Refer to your notes from Reading Mode.</p>
+          <textarea placeholder="Key quotes: 'conscience doesn't abide by majority rule', 'real courage is seeing it through'..." ></textarea>
+        </div>
+      </div>
+
+      <div id="aiModeratorPanel">
+        <h4>🤖 AI Moderator Feedback & Scoring</h4>
+        <p>Waiting for arguments...</p>
+        <div id="scorecards" style="display:none">
+          <div class="scorecard"><h5>Text Evidence</h5><div class="score">--</div><div class="score-comment">Not evaluated</div></div>
+          <div class="scorecard"><h5>Argument Logic</h5><div class="score">--</div><div class="score-comment">Not evaluated</div></div>
+          <div class="scorecard"><h5>Responsiveness</h5><div class="score">--</div><div class="score-comment">Not evaluated</div></div>
+        </div>
+      </div>
+    </div>
+
+     <footer> <!-- Added Footer -->
+        <p>&copy; 2025 DebateWorm - Making Reading Interactive and Fun</p>
+    </footer>
+
+  </div> <!-- End Container -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Get Elements ---
+        const startDebateBtn = document.getElementById('startDebateBtn');
+        const bookSelector = document.getElementById('bookSelector');
+        const bookOptions = document.querySelectorAll('.book-option');
+        const newDebateInterface = document.getElementById('newDebateInterface');
+        const messagesNew = document.getElementById('messagesNew');
+        const msgInputNew = document.getElementById('msgInputNew');
+        const sendBtnNew = document.getElementById('sendBtnNew');
+        const timerElNew = document.getElementById('timerNew');
+        const timerPhaseEl = document.getElementById('timerPhase');
+        const aiPanel = document.getElementById('aiModeratorPanel');
+        const scorecards = document.getElementById('scorecards');
+        const textPanelDebate = document.getElementById('textPanelDebate'); // Specific text panel
+        const debatePromptText = document.getElementById('debatePromptText');
+        const rebuttalBox = document.getElementById('rebuttalBox');
+        const bookTitleSpan = document.getElementById('bookTitle'); // For original interface if used
+
+        // --- State Variables ---
+        let timeLeft = 300; // 5 minutes for argument phase
+        let currentPhase = 'argument'; // 'argument', 'rebuttal', 'ended'
+        let argumentTime = 300; // 5 mins
+        let rebuttalTime = 180; // 3 mins
+        let ticking;
+        let messageCount = 0;
+        let currentBookKey = 'mockingbird'; // Default selected book
+
+        // --- Sample Data ---
+        const bookDebateData = { // Simplified data for debate mode
+             mockingbird: {
+                title: "To Kill a Mockingbird",
+                prompt: "Is Atticus Finch's primary motivation his personal conscience or setting an example?",
+                text: `<p>"You never really understand a person..."</p><p>"...llicked a hundred years before..."</p><p>"...conscience doesn't abide by majority rule..."</p><p>"...real courage is seeing it through..."</p>` // Keep it short
+            },
+            gatsby: {
+                title: "The Great Gatsby",
+                prompt: "Was Gatsby's pursuit of Daisy genuine love or an obsession with the past?",
+                text: `<p>"Gatsby believed in the green light..."</p><p>"So we beat on, boats against the current..."</p><p>"Can’t repeat the past? Why of course you can!"</p>`
+            },
+            "1984": {
+                 title: "1984",
+                 prompt: "Is Winston's rebellion ultimately futile against the Party's power?",
+                 text: `<p>"War is peace..."</p><p>"Who controls the past..."</p><p>"He loved Big Brother."</p>`
+            },
+            hamlet: {
+                title: "Hamlet",
+                prompt: "Is Hamlet's delay in avenging his father justified hesitation or paralyzing indecision?",
+                text: `<p>"To be, or not to be..."</p><p>"The play’s the thing / Wherein I’ll catch the conscience of the king."</p>`
+            },
+            frankenstein: {
+                title: "Frankenstein",
+                prompt: "Who bears more responsibility for the tragedies: Victor Frankenstein or his creation?",
+                 text: `<p>"I beheld the wretch—the miserable monster whom I had created."</p><p>"I was benevolent and good; misery made me a fiend."</p>`
+            }
+        };
+
+         const opponentLines = [ /* Same as before */
+            {text: "Your point about [counter] is valid, but consider how the text emphasizes [my_point].", evidence: "[Quote]"},
+            {text: "I disagree. The quote '[Quote]' directly supports the idea that [my_point].", evidence: "[Quote]"},
+            {text: "How does your interpretation account for the line '[Quote]'?", evidence: "[Quote]"},
+            {text: "While the text mentions [your_point], the overall theme leans towards [my_point], especially seen in '[Quote]'.", evidence: "[Quote]"},
+            {text: "That's one interpretation, but doesn't '[Quote]' suggest otherwise?", evidence: "[Quote]"}
+        ];
+        const moderatorFeedback = [ /* Same as before */
+            "Strong use of textual evidence!",
+            "Clear argument structure.",
+            "Make sure to directly address the opponent's last point.",
+            "How does this connect back to the main prompt?",
+            "Good point, consider adding another quote.",
+            "Well-reasoned rebuttal."
+        ];
+
+
+        // --- Functions ---
+
+        function loadDebateContent(bookKey) {
+            const data = bookDebateData[bookKey];
+            if (!data) return;
+
+            if (textPanelDebate) {
+                textPanelDebate.querySelector('h3').textContent = `Text: ${data.title}`;
+                // Find the content area within textPanelDebate to update
+                const contentArea = textPanelDebate.querySelector('p'); // Assuming first p or add a div
+                if (contentArea) {
+                     // A better approach would be to have a dedicated div for the text content
+                     textPanelDebate.innerHTML = `<h3>Text: ${data.title}</h3>${data.text}`;
+                }
+            }
+             if (debatePromptText) {
+                debatePromptText.textContent = data.prompt;
+            }
+             // Update original interface title if it exists
+             if (bookTitleSpan) bookTitleSpan.textContent = data.title;
+
+             // Reset messages
+             messagesNew.innerHTML = `<div class="msg system"><strong>Finding opponent... Found LiteraryTitan!</strong><p>Debate begins on: ${data.title}. 5 mins for opening arguments.</p></div>`;
         }
-      });
+
+        function startTimer(duration, phase) {
+            clearInterval(ticking); // Clear any existing timer
+            timeLeft = duration;
+            currentPhase = phase;
+            updateTimerDisplay(); // Update display immediately
+
+            if (timerPhaseEl) timerPhaseEl.textContent = phase === 'argument' ? 'Argument Phase' : 'Rebuttal Phase';
+            if (rebuttalBox) rebuttalBox.style.display = phase === 'rebuttal' ? 'block' : 'none';
+
+
+            ticking = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            timeLeft--;
+
+            if (timeLeft <= 0) {
+                clearInterval(ticking);
+                if (currentPhase === 'argument') {
+                    // Switch to rebuttal phase
+                    addSystemMessage("Argument phase ended. 3 minutes for rebuttals!");
+                    startTimer(rebuttalTime, 'rebuttal');
+                } else if (currentPhase === 'rebuttal') {
+                    // End debate
+                    endDebate();
+                }
+                return;
+            }
+            updateTimerDisplay();
+        }
+
+         function updateTimerDisplay() {
+             const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+             const s = String(timeLeft % 60).padStart(2, '0');
+             if (timerElNew) timerElNew.textContent = `${m}:${s} remaining`;
+
+             // Flashing effect (optional)
+              if (timeLeft <= 30) {
+                 if (timerElNew) timerElNew.style.color = timeLeft % 2 === 0 ? '#ff0000' : 'var(--secondary)';
+             } else {
+                 if (timerElNew) timerElNew.style.color = 'var(--secondary)'; // Reset color
+             }
+         }
+
+
+        function endDebate() {
+            currentPhase = 'ended';
+            addSystemMessage("Debate Time Ended! Final scores calculating...");
+            if (msgInputNew) msgInputNew.disabled = true;
+            if (sendBtnNew) sendBtnNew.disabled = true;
+            if (rebuttalBox) rebuttalBox.style.display = 'none'; // Hide rebuttal box
+            if(timerPhaseEl) timerPhaseEl.textContent = "Debate Ended";
+             if (timerElNew) timerElNew.textContent = `00:00 remaining`;
+
+            // Show final feedback/scores (can be more elaborate)
+            if (aiPanel) {
+                const feedbackText = aiPanel.querySelector('p');
+                if (feedbackText) feedbackText.textContent = "Debate concluded! Well argued by both sides.";
+                 // Final score update could happen here
+                 updateScores(Math.floor(Math.random()*3)+7, Math.floor(Math.random()*3)+7, Math.floor(Math.random()*3)+7); // Simulate final scores
+            }
+        }
+
+        function addMessage(t, isYou, evidence) {
+            if (!messagesNew) return;
+            const d = document.createElement('div');
+            d.className = 'msg ' + (isYou ? 'you' : (t.startsWith('🤖') ? 'opp' : 'opp')); // Distinguish system later if needed
+             const n = document.createElement('strong');
+             n.textContent = isYou ? 'You:' : 'LiteraryTitan:'; // Keep opponent name consistent for now
+             d.appendChild(n);
+             d.appendChild(document.createTextNode(' ' + t)); // Sanitize text
+            if (evidence) {
+                const ev = document.createElement('div');
+                ev.className = 'evidence';
+                ev.textContent = "Evidence: " + evidence;
+                d.appendChild(ev);
+            }
+            messagesNew.appendChild(d);
+            messagesNew.scrollTop = messagesNew.scrollHeight;
+        }
+
+         function addSystemMessage(t) {
+             if (!messagesNew) return;
+             const d = document.createElement('div');
+             d.className = 'msg system';
+             d.innerHTML = `<strong>SYSTEM:</strong><p>${t}</p>`; // Use innerHTML for simple formatting
+             messagesNew.appendChild(d);
+             messagesNew.scrollTop = messagesNew.scrollHeight;
+         }
+
+        function sendMessageNew() {
+            if (!msgInputNew || currentPhase === 'ended') return;
+            const userText = msgInputNew.value.trim();
+            if (!userText) return;
+
+            addMessage(userText, true);
+            msgInputNew.value = '';
+            messageCount++;
+
+            updateScores( // Simulate score update
+                Math.min(10, 4 + messageCount + (userText.includes('"') ? 1 : 0)),
+                Math.min(10, 5 + messageCount),
+                Math.min(10, currentPhase === 'rebuttal' ? 5 + messageCount : 4) // Higher responsiveness in rebuttal
+            );
+            updateModeratorFeedback();
+
+            // Simulate opponent response
+             if (currentPhase !== 'ended') {
+                 sendBtnNew.disabled = true; // Disable button while opponent "thinks"
+                setTimeout(() => {
+                     const rIndex = Math.floor(Math.random() * opponentLines.length);
+                     // Simple placeholder replacement for demo
+                     let oppText = opponentLines[rIndex].text.replace('[counter]', 'your point').replace('[my_point]', 'my view');
+                     let oppEvidence = opponentLines[rIndex].evidence.replace('[Quote]', '"...' + Math.random().toString().substring(2, 7) + '..."'); // Dummy quote
+                    addMessage(oppText, false, oppEvidence);
+                     if (currentPhase !== 'ended') sendBtnNew.disabled = false; // Re-enable button
+                     msgInputNew.focus(); // Focus input again
+                 }, 1500 + Math.random() * 1000); // Variable delay
+             }
+        }
+
+        function updateModeratorFeedback() {
+            if (!aiPanel) return;
+            const panelText = aiPanel.querySelector('p');
+            if (panelText) {
+                panelText.textContent = moderatorFeedback[Math.floor(Math.random() * moderatorFeedback.length)];
+            }
+        }
+
+        function updateScores(t, l, r) {
+            if (!scorecards) return;
+            const sCards = scorecards.querySelectorAll('.scorecard');
+            if (!sCards || sCards.length < 3) return;
+            updateScorecard(sCards[0], t); // Text Evidence
+            updateScorecard(sCards[1], l); // Logic
+            updateScorecard(sCards[2], r); // Responsiveness
+        }
+
+        function updateScorecard(card, score) {
+            const scoreEl = card.querySelector('.score');
+            const commentEl = card.querySelector('.score-comment');
+            const finalScore = Math.max(0, Math.min(10, Math.round(score))); // Ensure score is 0-10
+
+            if (scoreEl) scoreEl.textContent = `${finalScore}/10`;
+            if (commentEl) commentEl.textContent = getComment(finalScore);
+        }
+
+        function getComment(s) { /* Same as before */
+            if (s < 4) return 'Needs Work';
+            if (s < 7) return 'Developing';
+            if (s < 9) return 'Strong!';
+            return 'Excellent!';
+        }
+
+        // --- Event Listeners ---
+
+        bookOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                bookOptions.forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                currentBookKey = option.dataset.book;
+                // If debate started, maybe offer to switch? For demo, just update state.
+            });
+        });
+
+        if (startDebateBtn) {
+            startDebateBtn.addEventListener('click', () => {
+                if (bookSelector) bookSelector.style.display = 'none';
+                if (newDebateInterface) newDebateInterface.style.display = 'block';
+                loadDebateContent(currentBookKey); // Load selected book content
+                startTimer(argumentTime, 'argument'); // Start argument phase timer
+                 if (scorecards) scorecards.style.display = 'grid'; // Use grid display
+                updateScores(0, 0, 0); // Reset scores visually
+                updateModeratorFeedback(); // Initial feedback message
+                 if (msgInputNew) msgInputNew.focus();
+            });
+        }
+
+        if (sendBtnNew) {
+            sendBtnNew.addEventListener('click', sendMessageNew);
+        }
+
+        if (msgInputNew) {
+            msgInputNew.addEventListener('keydown', e => {
+                 if (e.key === 'Enter' && !e.shiftKey) {
+                     e.preventDefault(); // Prevent default Enter behavior (like newline in textarea)
+                    sendMessageNew();
+                }
+            });
+        }
+
+        console.log("Debate mode script loaded");
     });
   </script>
 </body>
