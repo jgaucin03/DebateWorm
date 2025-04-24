@@ -543,273 +543,346 @@
   </div>
 
   <script>
-    // DOM Elements
-    const startDebateBtn = document.getElementById('startDebateBtn');
-    const demoCard = document.getElementById('demoCard');
-    const newDebateInterface = document.getElementById('newDebateInterface');
-    const bookSelector = document.getElementById('bookSelector');
-    const msgInput = document.getElementById('msgInput');
-    const msgInputNew = document.getElementById('msgInputNew');
-    const evidenceInput = document.getElementById('evidenceInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const sendBtnNew = document.getElementById('sendBtnNew');
-    const messages = document.getElementById('messages');
-    const messagesNew = document.getElementById('messagesNew');
-    const timerEl = document.getElementById('timer');
-    const timerElNew = document.getElementById('timerNew');
-    const aiPanel = document.getElementById('aiModeratorPanel');
-    const scorecards = document.getElementById('scorecards');
-    const bookOptions = document.querySelectorAll('.book-option');
-    
-    // Book selection
-    bookOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        bookOptions.forEach(o => o.classList.remove('active'));
-        option.classList.add('active');
+    // Wait for DOM to be fully loaded before accessing elements
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("DOM fully loaded and parsed");
+      
+      // Safely get elements, with console warnings if not found
+      function $(id) {
+        const el = document.getElementById(id);
+        if (!el) console.warn(`Element not found: #${id}`);
+        return el;
+      }
+      
+      // Book selector section
+      const startDebateBtn = $('startDebateBtn');
+      const bookSelector = $('bookSelector');
+      const bookOptions = document.querySelectorAll('.book-option');
+      const bookTitle = $('bookTitle');
+      
+      // New debate interface elements
+      const newDebateInterface = $('newDebateInterface');
+      const messagesNew = $('messagesNew');
+      const msgInputNew = $('msgInputNew');
+      const sendBtnNew = $('sendBtnNew');
+      const timerElNew = $('timerNew');
+      
+      // Original debate elements
+      const demoCard = $('demoCard');
+      const messages = $('messages');
+      const msgInput = $('msgInput');
+      const evidenceInput = $('evidenceInput');
+      const sendBtn = $('sendBtn');
+      const timerEl = $('timer');
+      
+      // AI Moderator elements
+      const aiPanel = $('aiModeratorPanel');
+      const scorecards = $('scorecards');
+      
+      // Timer and debate state variables
+      let timeLeft = 300; // 5 minutes
+      let ticking;
+      let messageCount = 0;
+      let debateEnded = false;
+      
+      // Constants for debate
+      const opponentLines = [
+        {text: "Your point about family safety is valid, but remember Atticus's conscience.", evidence: "\"…a person's conscience.\""},
+        {text: "Atticus knew the case was unwinnable yet still took it.", evidence: "\"…we were licked a hundred years…\""},
+        {text: "He couldn't teach his children integrity if he didn't demonstrate it.", evidence: "\"If I didn't I couldn't hold up my head…\""},
+        {text: "Personal integrity trumps public opinion or even family hardship.", evidence: "\"Before I can live with other folks I've got to live with myself.\""}
+      ];
+      
+      const moderatorFeedback = [
+        "Good point! Consider linking to moral courage.",
+        "Interesting perspective. Reference Atticus's motivations.",
+        "Compelling argument—tie to conscience rule.",
+        "Well reasoned! Context adds depth."
+      ];
+      
+      // Book selection
+      if (bookOptions) {
+        bookOptions.forEach(option => {
+          option.addEventListener('click', () => {
+            bookOptions.forEach(o => o.classList.remove('active'));
+            option.classList.add('active');
+            
+            // Update book title if element exists
+            if (bookTitle) {
+              const title = option.querySelector('h4')?.textContent || "To Kill a Mockingbird";
+              bookTitle.textContent = title;
+            }
+          });
+        });
+      }
+      
+      // Start debate button
+      if (startDebateBtn) {
+        startDebateBtn.addEventListener('click', startDebate);
+        console.log("Start debate button listener attached");
+      }
+      
+      // The main start debate function
+      function startDebate() {
+        console.log("Starting debate...");
         
-        // Update book title in the prompt
-        const bookTitle = option.querySelector('h4').textContent;
-        document.getElementById('bookTitle').textContent = bookTitle;
-      });
-    });
-    
-    // Constants
-    const opponentLines = [
-      {text: "Your point about family safety is valid, but remember Atticus's conscience.", evidence: "\"…a person's conscience.\""},
-      {text: "Atticus knew the case was unwinnable yet still took it.", evidence: "\"…we were licked a hundred years…\""},
-      {text: "He couldn't teach his children integrity if he didn't demonstrate it.", evidence: "\"If I didn't I couldn't hold up my head…\""},
-      {text: "Personal integrity trumps public opinion or even family hardship.", evidence: "\"Before I can live with other folks I've got to live with myself.\""}
-    ];
-    
-    const moderatorFeedback = [
-      "Good point! Consider linking to moral courage.",
-      "Interesting perspective. Reference Atticus's motivations.",
-      "Compelling argument—tie to conscience rule.",
-      "Well reasoned! Context adds depth."
-    ];
-    
-    // Timer variables
-    let timeLeft = 300; // Changed to 5 minutes (300 seconds)
-    let ticking;
-    let messageCount = 0;
-    let debateEnded = false;
-    
-    // Start debate
-    startDebateBtn.addEventListener('click', () => {
-      bookSelector.style.display = 'none';
-      // Show the new interface instead of the old one
-      newDebateInterface.style.display = 'block';
-      //demoCard.style.display = 'block';
-      
-      msgInputNew.focus();
-      ticking = setInterval(updateTimer, 1000);
-      
-      setTimeout(() => {
-        scorecards.style.display = 'flex';
-        updateScores(0, 0, 0);
-      }, 2000);
-    });
-    
-    // Send message function for new interface
-    function sendMessageNew() {
-      const t = msgInputNew.value.trim();
-      if (!t) return;
-      
-      addMessageNew(t, true);
-      msgInputNew.value = '';
-      
-      messageCount++;
-      
-      // Calculate scores based on message count
-      const eScore = Math.min(messageCount * 2, 9);
-      const lScore = 5 + Math.min(messageCount, 4);
-      const rScore = 6 + Math.min(messageCount, 3);
-      
-      updateScores(eScore, lScore, rScore);
-      updateModeratorFeedback();
-      
-      if (!debateEnded) {
-        setTimeout(() => {
-          const r = opponentLines[Math.floor(Math.random() * opponentLines.length)];
-          addMessageNew(r.text, false, r.evidence);
-        }, 1500);
-      }
-    }
-    
-    // Add message to new interface
-    function addMessageNew(t, isYou, evidence) {
-      const d = document.createElement('div');
-      d.className = 'msg ' + (isYou ? 'you' : 'opp');
-      
-      const n = document.createElement('strong');
-      n.textContent = isYou ? 'You:' : 'LiteraryTitan:';
-      d.appendChild(n);
-      
-      d.append(' ' + t);
-      
-      if (evidence) {
-        const ev = document.createElement('div');
-        ev.className = 'evidence';
-        ev.textContent = evidence;
-        d.appendChild(ev);
-      }
-      
-      messagesNew.appendChild(d);
-      messagesNew.scrollTop = messagesNew.scrollHeight;
-    }
-    
-    // Event listeners for new interface
-    sendBtnNew.addEventListener('click', sendMessageNew);
-    msgInputNew.addEventListener('keydown', e => {
-      if (e.key === 'Enter') sendMessageNew();
-    });
-    
-    // Timer function that updates both timer displays
-    function updateTimer() {
-      timeLeft--;
-      
-      if (timeLeft <= 0) {
-        clearInterval(ticking);
-        endDebate();
-        return;
-      }
-      
-      const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-      const s = String(timeLeft % 60).padStart(2, '0');
-      
-      // Update both timer displays
-      timerEl.textContent = `${m}:${s}`;
-      timerElNew.textContent = `${m}:${s} remaining`;
-      
-      // Flash timer when time is running out
-      if (timeLeft <= 30) {
-        timerEl.style.color = timeLeft % 2 === 0 ? '#ff0000' : 'var(--secondary)';
-        timerElNew.style.color = timeLeft % 2 === 0 ? '#ff0000' : 'inherit';
-      }
-    }
-    
-    // End debate function
-    function endDebate() {
-      debateEnded = true;
-      msgInput.disabled = true;
-      msgInputNew.disabled = true;
-      sendBtn.disabled = true;
-      sendBtnNew.disabled = true;
-      
-      // Add system message to both interfaces
-      addMessage('Debate Time Ended', false);
-      addMessageNew('Debate Time Ended', false);
-      
-      // Show feedback in the moderator panel
-      aiPanel.querySelector('p').textContent = "Debate concluded! Your arguments showed good understanding of the text.";
-    }
-    
-    // Original functions (kept for compatibility)
-    function sendMessage() {
-      const t = msgInput.value.trim();
-      if (!t) return;
-      
-      const ev = evidenceInput.value.trim();
-      addMessage(t, true, ev);
-      
-      msgInput.value = '';
-      evidenceInput.value = '';
-      
-      messageCount++;
-      
-      const eScore = ev ? Math.min(messageCount * 2 + 2, 9) : Math.min(messageCount * 2, 7);
-      const lScore = 5 + Math.min(messageCount, 4);
-      const rScore = 6 + Math.min(messageCount, 3);
-      
-      updateScores(eScore, lScore, rScore);
-      updateModeratorFeedback();
-      
-      if (!debateEnded) {
-        setTimeout(() => {
-          const r = opponentLines[Math.floor(Math.random() * opponentLines.length)];
-          addMessage(r.text, false, r.evidence);
-        }, 1500);
-      }
-    }
-    
-    function addMessage(t, isYou, evidence) {
-      const d = document.createElement('div');
-      d.className = 'msg ' + (isYou ? 'you' : 'opp');
-      
-      const n = document.createElement('strong');
-      n.textContent = isYou ? 'You:' : 'LiteraryTitan:';
-      d.appendChild(n);
-      
-      d.append(' ' + t);
-      
-      if (evidence) {
-        const ev = document.createElement('div');
-        ev.className = 'evidence';
-        ev.textContent = evidence;
-        d.appendChild(ev);
-      }
-      
-      messages.appendChild(d);
-      messages.scrollTop = messages.scrollHeight;
-    }
-    
-    // Original event listeners
-    sendBtn.addEventListener('click', sendMessage);
-    msgInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') sendMessage();
-    });
-    
-    // Update moderator feedback
-    function updateModeratorFeedback() {
-      const f = moderatorFeedback[Math.floor(Math.random() * moderatorFeedback.length)];
-      aiPanel.querySelector('p').textContent = f;
-    }
-    
-    // Update scores
-    function updateScores(t, l, r) {
-      const sCards = scorecards.querySelectorAll('.scorecard');
-      
-      sCards[0].querySelector('.score').textContent = t + '/10';
-      sCards[0].querySelector('.score-comment').textContent = getComment(t);
-      
-      sCards[1].querySelector('.score').textContent = l + '/10';
-      sCards[1].querySelector('.score-comment').textContent = getComment(l);
-      
-      sCards[2].querySelector('.score').textContent = r + '/10';
-      sCards[2].querySelector('.score-comment').textContent = getComment(r);
-    }
-    
-    function getComment(s) {
-      if (s < 3) return 'Needs improvement';
-      if (s < 6) return 'Developing';
-      if (s < 8) return 'Strong';
-      return 'Exceptional!';
-    }
-    
-    // Mode tab click handler
-    document.querySelectorAll('.mode-tab').forEach(tab => {
-      tab.addEventListener('click', function() {
-        if (!this.classList.contains('active') && !this.parentElement.href) {
-          alert('Demo limited to Debate Mode. Full application will include all modes.');
+        if (bookSelector) bookSelector.style.display = 'none';
+        
+        // Show the new interface
+        if (newDebateInterface) {
+          console.log("Showing new debate interface");
+          newDebateInterface.style.display = 'block';
+          
+          // Focus input field if it exists
+          if (msgInputNew) msgInputNew.focus();
         }
-      });
-    });
-    
-    // Toggle between design modes (for testing)
-    const toggleDesignBtn = document.createElement('button');
-    toggleDesignBtn.textContent = 'Toggle Design';
-    toggleDesignBtn.className = 'button';
-    toggleDesignBtn.style.marginTop = '20px';
-    toggleDesignBtn.style.display = 'none'; // Hidden by default, enable for testing
-    
-    toggleDesignBtn.addEventListener('click', function() {
-      if (demoCard.style.display === 'none') {
-        demoCard.style.display = 'block';
-        newDebateInterface.style.display = 'none';
-      } else {
-        demoCard.style.display = 'none';
-        newDebateInterface.style.display = 'block';
+        
+        // Start timer
+        timeLeft = 300;
+        ticking = setInterval(updateTimer, 1000);
+        
+        // Show scorecards after delay
+        setTimeout(() => {
+          if (scorecards) {
+            scorecards.style.display = 'flex';
+            updateScores(0, 0, 0);
+          }
+        }, 2000);
       }
+      
+      // Timer function
+      function updateTimer() {
+        timeLeft--;
+        
+        if (timeLeft <= 0) {
+          clearInterval(ticking);
+          endDebate();
+          return;
+        }
+        
+        const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const s = String(timeLeft % 60).padStart(2, '0');
+        
+        // Update timer displays if they exist
+        if (timerEl) timerEl.textContent = `${m}:${s}`;
+        if (timerElNew) timerElNew.textContent = `${m}:${s} remaining`;
+        
+        // Flash timer when time is running out
+        if (timeLeft <= 30) {
+          if (timerEl) timerEl.style.color = timeLeft % 2 === 0 ? '#ff0000' : 'var(--secondary)';
+          if (timerElNew) timerElNew.style.color = timeLeft % 2 === 0 ? '#ff0000' : 'inherit';
+        }
+      }
+      
+      // End debate function
+      function endDebate() {
+        debateEnded = true;
+        
+        // Disable inputs
+        if (msgInput) msgInput.disabled = true;
+        if (msgInputNew) msgInputNew.disabled = true;
+        if (sendBtn) sendBtn.disabled = true;
+        if (sendBtnNew) sendBtnNew.disabled = true;
+        
+        // Add system message
+        addMessage('Debate Time Ended', false);
+        addMessageNew('Debate Time Ended', false);
+        
+        // Show feedback in moderator panel
+        if (aiPanel) {
+          const feedbackText = aiPanel.querySelector('p');
+          if (feedbackText) feedbackText.textContent = "Debate concluded! Your arguments showed good understanding of the text.";
+        }
+      }
+      
+      // Send message functions
+      function sendMessageNew() {
+        if (!msgInputNew) return;
+        
+        const t = msgInputNew.value.trim();
+        if (!t) return;
+        
+        addMessageNew(t, true);
+        msgInputNew.value = '';
+        
+        messageCount++;
+        
+        // Update scores and feedback
+        updateScores(Math.min(messageCount * 2, 9), 5 + Math.min(messageCount, 4), 6 + Math.min(messageCount, 3));
+        updateModeratorFeedback();
+        
+        // Opponent response
+        if (!debateEnded) {
+          setTimeout(() => {
+            const r = opponentLines[Math.floor(Math.random() * opponentLines.length)];
+            addMessageNew(r.text, false, r.evidence);
+          }, 1500);
+        }
+      }
+      
+      function sendMessage() {
+        if (!msgInput || !evidenceInput) return;
+        
+        const t = msgInput.value.trim();
+        if (!t) return;
+        
+        const ev = evidenceInput.value.trim();
+        addMessage(t, true, ev);
+        
+        msgInput.value = '';
+        evidenceInput.value = '';
+        
+        messageCount++;
+        
+        // Update scores and feedback
+        const eScore = ev ? Math.min(messageCount * 2 + 2, 9) : Math.min(messageCount * 2, 7);
+        updateScores(eScore, 5 + Math.min(messageCount, 4), 6 + Math.min(messageCount, 3));
+        updateModeratorFeedback();
+        
+        // Opponent response
+        if (!debateEnded) {
+          setTimeout(() => {
+            const r = opponentLines[Math.floor(Math.random() * opponentLines.length)];
+            addMessage(r.text, false, r.evidence);
+          }, 1500);
+        }
+      }
+      
+      // Add message to interfaces
+      function addMessageNew(t, isYou, evidence) {
+        if (!messagesNew) return;
+        
+        const d = document.createElement('div');
+        d.className = 'msg ' + (isYou ? 'you' : 'opp');
+        
+        const n = document.createElement('strong');
+        n.textContent = isYou ? 'You:' : 'LiteraryTitan:';
+        d.appendChild(n);
+        
+        d.append(' ' + t);
+        
+        if (evidence) {
+          const ev = document.createElement('div');
+          ev.className = 'evidence';
+          ev.textContent = evidence;
+          d.appendChild(ev);
+        }
+        
+        messagesNew.appendChild(d);
+        messagesNew.scrollTop = messagesNew.scrollHeight;
+      }
+      
+      function addMessage(t, isYou, evidence) {
+        if (!messages) return;
+        
+        const d = document.createElement('div');
+        d.className = 'msg ' + (isYou ? 'you' : 'opp');
+        
+        const n = document.createElement('strong');
+        n.textContent = isYou ? 'You:' : 'LiteraryTitan:';
+        d.appendChild(n);
+        
+        d.append(' ' + t);
+        
+        if (evidence) {
+          const ev = document.createElement('div');
+          ev.className = 'evidence';
+          ev.textContent = evidence;
+          d.appendChild(ev);
+        }
+        
+        messages.appendChild(d);
+        messages.scrollTop = messages.scrollHeight;
+      }
+      
+      // Update moderator feedback
+      function updateModeratorFeedback() {
+        if (!aiPanel) return;
+        
+        const panelText = aiPanel.querySelector('p');
+        if (panelText) {
+          const f = moderatorFeedback[Math.floor(Math.random() * moderatorFeedback.length)];
+          panelText.textContent = f;
+        }
+      }
+      
+      // Update scores
+      function updateScores(t, l, r) {
+        if (!scorecards) return;
+        
+        const sCards = scorecards.querySelectorAll('.scorecard');
+        if (!sCards || sCards.length < 3) return;
+        
+        updateScorecard(sCards[0], t);
+        updateScorecard(sCards[1], l);
+        updateScorecard(sCards[2], r);
+      }
+      
+      function updateScorecard(card, score) {
+        const scoreEl = card.querySelector('.score');
+        const commentEl = card.querySelector('.score-comment');
+        
+        if (scoreEl) scoreEl.textContent = score + '/10';
+        if (commentEl) commentEl.textContent = getComment(score);
+      }
+      
+      function getComment(s) {
+        if (s < 3) return 'Needs improvement';
+        if (s < 6) return 'Developing';
+        if (s < 8) return 'Strong';
+        return 'Exceptional!';
+      }
+      
+      // Add event listeners if elements exist
+      if (sendBtnNew) {
+        sendBtnNew.addEventListener('click', sendMessageNew);
+      }
+      
+      if (msgInputNew) {
+        msgInputNew.addEventListener('keydown', e => {
+          if (e.key === 'Enter') sendMessageNew();
+        });
+      }
+      
+      if (sendBtn) {
+        sendBtn.addEventListener('click', sendMessage);
+      }
+      
+      if (msgInput) {
+        msgInput.addEventListener('keydown', e => {
+          if (e.key === 'Enter') sendMessage();
+        });
+      }
+      
+      // Mode tab click handler
+      document.querySelectorAll('.mode-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          if (!this.classList.contains('active') && !this.parentElement.href) {
+            alert('Demo limited to Debate Mode. Full application will include all modes.');
+          }
+        });
+      });
+      
+      // Debug - add a force show button (uncomment if needed)
+      /*
+      const debugBtn = document.createElement('button');
+      debugBtn.textContent = 'DEBUG: Force Show Interface';
+      debugBtn.className = 'button';
+      debugBtn.style.marginTop = '20px';
+      debugBtn.style.backgroundColor = '#ff0000';
+      
+      debugBtn.addEventListener('click', function() {
+        console.log("Debug button clicked");
+        if (bookSelector) bookSelector.style.display = 'none';
+        if (newDebateInterface) newDebateInterface.style.display = 'block';
+      });
+      
+      document.querySelector('.container').appendChild(debugBtn);
+      */
+      
+      // Debug log
+      console.log("Debate mode script loaded and initialized");
     });
-    
-    document.querySelector('.container').appendChild(toggleDesignBtn);
+  </script>
+</body>
+</html>
